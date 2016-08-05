@@ -30,4 +30,9 @@ Age: 18+
 Conduct interviews Aug 5-7, deliver results Aug 8
 
 ### Script
+User Interface : How do you feel about the tab layout?
+Features : What features do you like/dislike in news reader apps? Are there any features you want to see that those apps don't have?
+Content : What news content is most important to you?
+Social Media : Which social media do you use? Where/how do you share news stories?
+Navigation : How do you want to move between articles in a newsreader app?
 
