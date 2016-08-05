@@ -102,45 +102,19 @@ By the end of week 9:
 
 ### Full List of Vice API endpoints
 
-- http://vice.com/api/getvicetoday/<:page>
-  - page: integer
-  - returns items from the vice today feed
-- http://vice.com/api/getmostpopular/<:page>
-  - type: string (‘video’ | ‘blog’)  video for videos, blog for text and gallery
-  - returns items for the most popular feed by type
-- http://vice.com/api/getmostpopular/<:type>/<:page>
-  - page: integer
-  - type: string (‘video’ | ‘blog’)  video for videos, blog for text and gallery
-  - returns items for the most popular feed by type
-- http://vice.com/api/getlatest/<:page>
-  - page: integer
-  - returns items ordered by publish date
-- http://vice.com/api/getlatest/category/<:category>/<:page>
-  - category :string
-  - available categories listed below
-  - :page integer
-  - returns items by category ordered by publish date
-- http://vice.com/api/getlatest/<:type>/<:page>
-  - type: string (‘blog’ | ’video’ | ’gallery’ | ’dos-and-donts’)
-  - blog for text, video for video, gallery for gallery, and dos-and-donts for DnDs
-  - page: integer
-  - returns items by article type ordered by publish date
-- http://vice.com/api/getepisodeparts/<:id>
-  - id: integer - ID of an article
-  - returns all OTHER articles in the given article’s episode if it associated with an episode
-- http://vice.com/api/article/<:id>
-  - id: integer - ID of an article
-  - returns all api data for the given article including other episode parts if applicable
-- http://vice.com/api/series/<:id>/<:page>
-- id: integer - ID of a series (show or column)
-  - page: integer
-  - returns all articles within a given series
-- http://vice.com/api/getallshows/<:page>
-  - page: integer
-  - returns a list of show series
-- http://vice.com/api/getallcolumns/<:page>
-  - page: integer
-  - returns a list of column series
+|Endpoint|Parameters|Functionality|
+|---|---|---|
+|http://vice.com/api/getvicetoday/<:page>|page: integer|returns items from the vice today feed|
+|http://vice.com/api/getmostpopular/<:page>|type: string (`video` for videos, `blog` for text and gallery)|returns items for the most popular feed by type|
+|http://vice.com/api/getmostpopular/<:type>/<:page>|page: integer<br>type: string (`video` for videos, `blog` for text and gallery)|returns items for the most popular feed by type|
+|http://vice.com/api/getlatest/<:page>|page: integer|returns items ordered by publish date|
+|http://vice.com/api/getlatest/category/<:category>/<:page>|category: string (available categories listed below)<br>page: integer|returns items by category ordered by publish date|
+|http://vice.com/api/getlatest/<:type>/<:page>|type: string (`blog` for text, `video` for video, `gallery` for gallery, and `dos-and-donts` for DnDs)<br>page: integer|returns items by article type ordered by publish date|
+|http://vice.com/api/getepisodeparts/<:id>|id: integer - ID of an article|returns all OTHER articles in the given article’s episode if it associated with an episode|
+|http://vice.com/api/article/<:id>|id: integer - ID of an article|returns all api data for the given article including other episode parts if applicable|
+|http://vice.com/api/series/<:id>/<:page>|id: integer - ID of a series (show or column)<br>page: integer|returns all articles within a given series|
+|http://vice.com/api/getallshows/<:page>|page: integer|returns a list of show series|
+|http://vice.com/api/getallcolumns/<:page>|page: integer|returns a list of column series|
 
 ### Full List of Vice Categories
   news, music, sports, tech, travel, fashion, guide, nsfw, photo, comics, stuff, film, festivals, gallery, noisey, thecreatorsproject, fightland, motherboard, food, interviews, culture, column
