@@ -20,7 +20,7 @@ Determine what elements users find important enough to be sent notifications for
 7. Do users want to save/favorite certain stories?
 
 ### Methodology
-Insterview subjects will be asked a series of questions gauging what they want to see in a newsreader app. Subjects will be given a series of competing newsreaders to evaluate. Subjects will share what they like and what they don't like, and if their feature requests have changed since test driving other apps.
+Interview subjects will be asked a series of questions gauging what they want to see in a newsreader app. Subjects will be given a series of competing newsreaders to evaluate. Subjects will share what they like and what they don't like, and if their feature requests have changed since test driving other apps.
 
 ### Participants
 People who currently use newspapers or newsreader apps at least on a weekly basis.
@@ -36,3 +36,6 @@ Content : What news content is most important to you?
 Social Media : Which social media do you use? Where/how do you share news stories?
 Navigation : How do you want to move between articles in a newsreader app?
 
+[Competitor Analysis](https://docs.google.com/spreadsheets/d/1KGbH-jzJOdgr3FnRTGS_B94x7bYK_4hHPceagUmpimQ/edit#gid=0)
+
+[User Research](https://docs.google.com/forms/d/e/1FAIpQLSdVFw0X7vmNM-To7OchXOc3kAkV5-1c9D_6H0_B81OUIGQk2A/viewform?c=0&w=1)
