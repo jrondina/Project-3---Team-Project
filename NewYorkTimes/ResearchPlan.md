@@ -36,6 +36,6 @@ Content : What news content is most important to you?
 Social Media : Which social media do you use? Where/how do you share news stories?
 Navigation : How do you want to move between articles in a newsreader app?
 
-[Competitor Analysis](https://docs.google.com/spreadsheets/d/1KGbH-jzJOdgr3FnRTGS_B94x7bYK_4hHPceagUmpimQ/edit#gid=0)
+[Competitor Analysis](https://docs.google.com/spreadsheets/d/1KGbH-jzJOdgr3FnRTGS_B94x7bYK_4hHPceagUmpimQ/edit?usp=sharing)
 
-[User Research](https://docs.google.com/forms/d/e/1FAIpQLSdVFw0X7vmNM-To7OchXOc3kAkV5-1c9D_6H0_B81OUIGQk2A/viewform?c=0&w=1)
+[User Research](https://docs.google.com/spreadsheets/d/1mnmURCil-E8QcKyEW3iVDw7yQU5ICitlDYz4gP9iyH0/edit?usp=sharing)
