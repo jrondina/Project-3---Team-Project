@@ -19,7 +19,7 @@ Your work must:
 	- Two cards should present data provided through a web API (e.g. Weather card, Twitter card, Maps card, Photo of the Day). Check out [this directory of APIs](http://www.programmableweb.com/apis/directory) if you need some API ideas.
 - Use the [Retrofit library](https://square.github.io/retrofit/) to handle HTTP requests and parse JSON data	
 - Include **at least 2 prototypes**
-- Include user stories based on your research and feature prioritization in a Trello board for the **complete flow of your app**
+- Include user stories based on your research and feature prioritization in a [Trello board](http://buildbettersoftware.com/trello-for-software-development) for the **complete flow of your app**
 - Integrate with the Twitter and/or Facebook APIs to allow sharing of content via social media
 - Look great in both landscape and portrait modes and reflect Material Design principles
 - Include at least one **Notification** feature (e.g. reminder, alarm)
