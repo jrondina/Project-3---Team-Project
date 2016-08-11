@@ -28,7 +28,7 @@ Your work must:
 	- Airbnb
 	- Uber/Lyft
 - Include **at least 2 prototypes**
-- Include user stories based on your research and feature prioritization in a Trello board for the **complete flow of your app**
+- Include user stories based on your research and feature prioritization in a [Trello board](http://buildbettersoftware.com/trello-for-software-development) for the **complete flow of your app**
 - Integrate with the Twitter and/or Facebook APIs to allow sharing of content via social media
 - Look great in both landscape and portrait modes and reflect Material Design principles
 - Include at least one **Notification** feature (e.g. reminder, alarm)
