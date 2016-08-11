@@ -33,7 +33,7 @@ Your work must:
 - Look great in both landscape and portrait modes and reflect Material Design principles
 - Include at least one **Notification** feature (e.g. reminder, alarm)
 - Include **automated testing** (and manual testing if needed) to cover your app.
-- Use **Sync Adapters** to manage API calls
+- Use **JobScheduler** to manage API calls
 - Not crash or hang and should handle for when networking/internet is slow or unavailable
 - Have code that is semantically clean and well-organized
 
