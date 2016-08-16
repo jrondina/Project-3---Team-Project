@@ -20,6 +20,13 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public SectionsPagerAdapter(FragmentManager fm, ArrayList<String> sectionNames) {
         super(fm);
         mSectionNames = sectionNames;
+
+
+        //TestCode
+        mSectionNames = new ArrayList<>();
+        mSectionNames.add("top news");
+        mSectionNames.add("technology");
+        mSectionNames.add("science");
     }
 
     @Override

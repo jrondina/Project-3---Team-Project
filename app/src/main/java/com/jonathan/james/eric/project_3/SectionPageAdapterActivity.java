@@ -75,8 +75,8 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements Nav
         int id = item.getItemId();
 
         //ToDo add
-        if (id) {
-            // Handle the camera action
+        switch(id){
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

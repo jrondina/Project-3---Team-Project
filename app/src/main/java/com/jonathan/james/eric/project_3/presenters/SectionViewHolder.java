@@ -39,5 +39,61 @@ public class SectionViewHolder extends RecyclerView.ViewHolder {
         mShare = (ImageButton) itemView.findViewById(R.id.section_card_share);
     }
 
+    public void setCardOnClickListener(View.OnClickListener listener){
+        mContainer.setOnClickListener(listener);
+    }
+    
+    public void setBookmarkListener(View.OnClickListener listener){
+        mBookmark.setOnClickListener(listener);
+    }
+    
+    public void setShareListener(View.OnClickListener listener){
+        mShare.setOnClickListener(listener);
+    }
+
+    //method to set the bookmark state of the article
+    public void setBookmark(Boolean b){
+        if(b){
+            mBookmark.setImageResource(R.drawable.ic_bookmark_black_24dp);
+        } else{
+            mBookmark.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
+        }
+        mBookmark.setTag(b);
+    }
+
+    //method to toggle the bookmark button and return whether the article is bookmarked anymore
+    public boolean toggleBookmark(){
+        if(mBookmark.getTag().equals(Boolean.TRUE)){
+            mBookmark.setTag(Boolean.FALSE);
+            mBookmark.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
+            return false;
+        } else{
+            mBookmark.setTag(Boolean.TRUE);
+            mBookmark.setImageResource(R.drawable.ic_bookmark_black_24dp);
+            return true;
+        }
+    }
+
+    
+    public void setSectionText(String s){
+        mSection.setText(s);
+    }
+
+    public void setByLineText(String s){
+        mByLine.setText(s);
+    }
+
+    public void setHeadlineText(String s){
+        mHeadline.setText(s);
+    }
+
+    public void setDateText(String s){
+        mDate.setText(s);
+    }
+
+    public void setLeadParagraphText(String s){
+        mLeadParagraph.setText(s);
+    }
+
 
 }
