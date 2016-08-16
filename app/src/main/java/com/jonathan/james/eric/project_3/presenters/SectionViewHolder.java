@@ -1,12 +1,17 @@
 package com.jonathan.james.eric.project_3.presenters;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.support.v4.graphics.BitmapCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jonathan.james.eric.project_3.R;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by Jonathan Taylor on 8/15/16.
@@ -22,6 +27,8 @@ public class SectionViewHolder extends RecyclerView.ViewHolder {
     private ImageButton mBookmark;
     private ImageButton mShare;
 
+    private ImageView mThumbnail;
+
     private CardView mContainer;
 
     public SectionViewHolder(View itemView) {
@@ -34,6 +41,8 @@ public class SectionViewHolder extends RecyclerView.ViewHolder {
         mHeadline = (TextView) itemView.findViewById(R.id.section_card_headline);
         mDate = (TextView) itemView.findViewById(R.id.section_card_updated_date);
         mLeadParagraph = (TextView) itemView.findViewById(R.id.section_card_lead_paragraph);
+
+        mThumbnail = (ImageView) itemView.findViewById(R.id.section_card_thumbnail);
 
         mBookmark = (ImageButton) itemView.findViewById(R.id.section_card_bookmark);
         mShare = (ImageButton) itemView.findViewById(R.id.section_card_share);
@@ -74,7 +83,10 @@ public class SectionViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    
+    public void setThumbnail(String thumbnailURL) {
+        Picasso.with(mThumbnail.getContext()).load(thumbnailURL).into(mThumbnail);
+    }
+
     public void setSectionText(String s){
         mSection.setText(s);
     }
@@ -95,5 +107,8 @@ public class SectionViewHolder extends RecyclerView.ViewHolder {
         mLeadParagraph.setText(s);
     }
 
+    public Context getViewContext(){
+        return mContainer.getContext();
+    }
 
 }

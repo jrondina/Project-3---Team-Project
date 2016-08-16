@@ -1,7 +1,10 @@
 package com.jonathan.james.eric.project_3;
 
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,11 +14,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
+import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
 import com.jonathan.james.eric.project_3.presenters.SectionsPagerAdapter;
+import com.squareup.picasso.Picasso;
 
-public class SectionPageAdapterActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+import java.util.ArrayList;
+
+public class SectionPageAdapterActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener, ArticleListener, SectionCardListener {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
+
+    private ViewPager mViewPager;
+    private TabLayout mTabLayout;
+
+    private FragmentManager mManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +37,16 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements Nav
         setContentView(R.layout.activity_section_page_adapter);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
+
+        mViewPager = (ViewPager) findViewById(R.id.section_fragment_container);
+        mTabLayout = (TabLayout) findViewById(R.id.section_tabs);
+
+
+        //Set up the Fragment Manager
+        mManager = getSupportFragmentManager();
+
 
 
 
@@ -34,6 +58,26 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements Nav
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //TestCode
+        ArrayList<String> mSectionNames = new ArrayList<>();
+        mSectionNames.add("top news");
+        mSectionNames.add("technology");
+        mSectionNames.add("science");
+        mSectionNames.add("politics");
+        mSectionNames.add("world");
+
+        mSectionsPagerAdapter = new SectionsPagerAdapter(mManager, mSectionNames, this, this);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        mTabLayout.setupWithViewPager(mViewPager);
     }
 
     @Override
@@ -74,13 +118,30 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements Nav
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        //ToDo add
+        //ToDo add one for each Section -- Also be sure to check if the source is active or not and spawn the fragment accordingly
         switch(id){
 
         }
 
+
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onBookMarkClick(Article a) {
+
+    }
+
+    @Override
+    public void onShareClick(Article a) {
+
+    }
+
+    @Override
+    public void onCardClick(Article a) {
+
     }
 }

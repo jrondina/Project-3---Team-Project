@@ -5,9 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jonathan.james.eric.project_3.Article;
 import com.jonathan.james.eric.project_3.R;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
+
+import java.util.ArrayList;
 
 /**
  * Created by Jonathan Taylor on 8/15/16.
@@ -34,34 +37,41 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
     }
 
     @Override
-    public void onBindViewHolder(final SectionViewHolder holder, final int position) {
+    public void onBindViewHolder(final SectionViewHolder holder, int position) {
 
-        holder.setBookmark(new Boolean(mArticles.get(position).isBookmarked()));
+        holder.setBookmark(Boolean.valueOf(mArticles.get(position).isBookmark()));
 
         //on click listener to spawn a detail fragment
         holder.setCardOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                mCardListener.onCardClick(mArticles.get(holder.getAdapterPosition()));
             }
         });
 
+        //set listeners for the
         holder.setBookmarkListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 holder.toggleBookmark();
-                mArticleListener.onBookMarkClick(mArticles.get(position));
+                mArticleListener.onBookMarkClick(mArticles.get(holder.getAdapterPosition()));
             }
         });
         holder.setShareListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mArticleListener.onShareClick(mArticles.get(position));
+                mArticleListener.onShareClick(mArticles.get(holder.getAdapterPosition()));
             }
         });
 
-        //ToDo bind strings from the article to the text views
-        holder.setSectionText(mArticles.get(position).g);
+        //ToDo bind ByLine to the byline text
+        holder.setSectionText(mArticles.get(position).getSection());
+//        holder.setByLineText(mArticles.get(position).get);
+        holder.setHeadlineText(mArticles.get(position).getHeadline());
+        holder.setLeadParagraphText(mArticles.get(position).getLeadParagraph());
+        holder.setDateText(mArticles.get(position).getDate());
+
+        holder.setThumbnail(mArticles.get(position).getLeadImage().getThumbnailImage());
     }
 
     @Override
