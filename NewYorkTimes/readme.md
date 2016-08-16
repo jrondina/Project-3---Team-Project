@@ -18,12 +18,12 @@ Your work must:
 - Allow the user to receive push notifications of developments on followed topics from social media accounts of approved providers
 - Allow the user to share breaking news developments with friends
 - Include **at least 2 prototypes**
-- Include user stories based on your research and feature prioritization in a Trello board for the **complete flow of your app**
+- Include user stories based on your research and feature prioritization in a [Trello board](http://buildbettersoftware.com/trello-for-software-development) for the **complete flow of your app**
 - Integrate with the Twitter and/or Facebook APIs to allow sharing of content via social media
 - Look great in both landscape and portrait modes and reflect Material Design principles
 - Include at least one **Notification** feature (e.g. reminder, alarm)
 - Include **automated testing** (and manual testing if needed) to cover your app.
-- Use **Sync Adapters** to manage API calls
+- Use **JobScheduler** to manage API calls
 - Not crash or hang and should handle for when networking/internet is slow or unavailable
 - Have code that is semantically clean and well-organized
 
