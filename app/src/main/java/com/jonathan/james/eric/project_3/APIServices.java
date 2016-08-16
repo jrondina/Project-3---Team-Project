@@ -13,7 +13,9 @@ import com.jonathan.james.eric.project_3.models.TopNews.TopNewsList;
 import com.jonathan.james.eric.project_3.services.ArticleSearchNYT;
 import com.jonathan.james.eric.project_3.services.TopNewsNYT;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,17 +30,15 @@ public class APIServices {
 
     public static final String LOG_DIVIDER = "=====================================================";
 
-    public static final String TAG = "APIServicesDebug";
+    public static final String TAG = "APIServices";
     public static final String baseUrl = "https://api.nytimes.com/svc/";
 
     public static final int IMG_TOP_THUMB = 1;
     public static final int IMG_TOP_LARGE = 4;
 
-    public static final int IMG_SEARCH_THUMB = 1;
-    public static final int IMG_SEARCH_LARGE = 0;
-
     public String section;
     public String query;
+    public Map<String, String> options;
 
     public Retrofit retrofitInit(Context context) {
 
@@ -75,11 +75,16 @@ public class APIServices {
 
         Log.i(TAG, "articleSearch: Starting search for: " + query);
 
+        options = new HashMap<>();
+        options.put("q",query);
+        options.put("fq","type_of_material:(!\"Letter\")");
+        options.put("sort","newest");
+
         //create instance of ArticleSearch and get Call
 
         ArticleSearchNYT service = retrofit.create(ArticleSearchNYT.class);
 
-        Call<ArticleSearchList> call = service.getResult(query);
+        Call<ArticleSearchList> call = service.getResult(options);
 
         //make API call
 

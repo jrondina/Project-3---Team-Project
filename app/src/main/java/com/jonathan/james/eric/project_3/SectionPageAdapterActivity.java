@@ -12,8 +12,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity {
 
         //ToDo add code for setting up Fragment Pager Adapter
 
-        APIServices apiservice = new APIServices();
-
+        APIServices apiservice = new APIServices(); //instantiates an API Service
 
         /* IGNORE THIS, DEBUG STUFF
         apiservice.articleSearch("harambe", apiservice.retrofitInit(this));

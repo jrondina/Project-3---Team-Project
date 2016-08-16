@@ -12,12 +12,15 @@ import android.widget.EditText;
 
 import com.jonathan.james.eric.project_3.models.ArticleSearch.ArticleSearchList;
 import com.jonathan.james.eric.project_3.models.ArticleSearch.Doc;
+import com.jonathan.james.eric.project_3.models.ArticleSearch.Multimedium;
 import com.jonathan.james.eric.project_3.models.TopNews.Result;
 import com.jonathan.james.eric.project_3.models.TopNews.TopNewsList;
 import com.jonathan.james.eric.project_3.services.ArticleSearchNYT;
 import com.jonathan.james.eric.project_3.services.TopNewsNYT;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,14 +33,17 @@ public class APIServicesDebug extends AppCompatActivity {
 
     public static final String LOG_DIVIDER = "=====================================================";
 
-    public static final String TAG = "APIServicesDebug";
+    public static final String TAG = "APIServices";
     public static final String baseUrl = "https://api.nytimes.com/svc/";
 
     public static final int IMG_TOP_THUMB = 1;
     public static final int IMG_TOP_LARGE = 4;
 
-    public static final int IMG_SEARCH_THUMB = 1;
-    public static final int IMG_SEARCH_LARGE = 0;
+    public Map<String, String> options;
+
+    String section;
+    String query;
+
 
     Button mHomeButton;
     Button mOpinionButton;
@@ -47,8 +53,6 @@ public class APIServicesDebug extends AppCompatActivity {
 
     EditText mSearchEdit;
 
-    String section;
-    String query;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,10 +96,10 @@ public class APIServicesDebug extends AppCompatActivity {
                 }
 
                 if (edit) {
-                    articleSearch(query, retrofitInit());
+                    articleSearch(query, retrofitInit(APIServicesDebug.this));
                 }
                 else  {
-                    topNews(section, retrofitInit());
+                    topNews(section, retrofitInit(APIServicesDebug.this));
                 }
 
             }
@@ -109,7 +113,7 @@ public class APIServicesDebug extends AppCompatActivity {
 
     }
 
-    public Retrofit retrofitInit() {
+    public Retrofit retrofitInit(Context context) {
 
         if (section == null) {
             section = "home";
@@ -117,7 +121,7 @@ public class APIServicesDebug extends AppCompatActivity {
 
         Log.i(TAG, "fetching Articles from API");
 
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
 
         Retrofit retrofit = null;
@@ -142,11 +146,18 @@ public class APIServicesDebug extends AppCompatActivity {
 
     public void articleSearch(String query, Retrofit retrofit) {
 
+        Log.i(TAG, "articleSearch: Starting search for: " + query);
+
+        options = new HashMap<>();
+        options.put("q",query);
+        options.put("fq","type_of_material:(!\"Letter\")");
+        options.put("sort","newest");
+
         //create instance of ArticleSearch and get Call
 
         ArticleSearchNYT service = retrofit.create(ArticleSearchNYT.class);
 
-        Call<ArticleSearchList> call = service.getResult(query);
+        Call<ArticleSearchList> call = service.getResult(options);
 
         //make API call
 
@@ -155,6 +166,9 @@ public class APIServicesDebug extends AppCompatActivity {
             public void onResponse(Call<ArticleSearchList> call,
                                    Response<ArticleSearchList> ArticleSearchResponse) {
                 List<Doc> docs = ArticleSearchResponse.body().getResponse().getDocs();
+
+                String imgThumb = "";
+                String imgLarge = "";
 
                 for (Doc article: docs
                         ) {
@@ -172,12 +186,24 @@ public class APIServicesDebug extends AppCompatActivity {
                     Log.i(TAG, "URL: " + article.getWebUrl());
                     if (article.getMultimedia().size() > 2) {
 
+                        for (Multimedium image: article.getMultimedia()
+                                ) {
+                            if (image.getSubtype().equals("thumbnail") || image.getSubtype().equals("wide")) {
+                                imgThumb = image.getUrl();
+                            }
+                            if (image.getSubtype().equals("xlarge")) {
+                                imgLarge = image.getUrl();
+                            }
 
+                        }
+                        if (!imgThumb.equals("")) {
+                            Log.i(TAG, "ThumbURL: " + "https://static01.nyt.com/" + imgThumb);
+                        }
+                        if (!imgLarge.equals("")) {
+                            Log.i(TAG, "LargeURL: " + "https://static01.nyt.com/" +
+                                    imgLarge);
+                        }
 
-                        Log.i(TAG, "ThumbURL: " + "https://static01.nyt.com/" +
-                                article.getMultimedia().get(IMG_SEARCH_THUMB).getUrl());
-                        Log.i(TAG, "LargeURL: " + "https://static01.nyt.com/" +
-                                article.getMultimedia().get(IMG_SEARCH_LARGE).getUrl());
                     }
 
                     Log.i(TAG, LOG_DIVIDER);
@@ -186,8 +212,7 @@ public class APIServicesDebug extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ArticleSearchList> call, Throwable t) {
-
-                Log.e(TAG, "onFailure: Could not establish Connection", null);
+                Log.e(TAG, "onFailure: Could not establish Connection", t);
 
 
             }
@@ -234,7 +259,7 @@ public class APIServicesDebug extends AppCompatActivity {
             @Override
             public void onFailure(Call<TopNewsList> call, Throwable t) {
 
-                Log.e(TAG, "onFailure: Could not establish Connection", null);
+                Log.e(TAG, "onFailure: Could not establish Connection", t);
 
 
             }
