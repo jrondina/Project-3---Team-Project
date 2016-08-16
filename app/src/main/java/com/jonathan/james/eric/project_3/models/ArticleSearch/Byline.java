@@ -1,29 +1,28 @@
 package com.jonathan.james.eric.project_3.models.ArticleSearch;
 
+import java.util.ArrayList;
+import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Created by jamesrondina on 8/15/16.
- */
 public class Byline {
 
     @SerializedName("person")
     @Expose
-    private List<Person> person = new ArrayList<Person>();
+    private List<Object> person = new ArrayList<Object>();
     @SerializedName("original")
     @Expose
     private String original;
+    @SerializedName("organization")
+    @Expose
+    private String organization;
 
     /**
      *
      * @return
      * The person
      */
-    public List<Person> getPerson() {
+    public List<Object> getPerson() {
         return person;
     }
 
@@ -32,7 +31,7 @@ public class Byline {
      * @param person
      * The person
      */
-    public void setPerson(List<Person> person) {
+    public void setPerson(List<Object> person) {
         this.person = person;
     }
 
@@ -52,6 +51,24 @@ public class Byline {
      */
     public void setOriginal(String original) {
         this.original = original;
+    }
+
+    /**
+     *
+     * @return
+     * The organization
+     */
+    public String getOrganization() {
+        return organization;
+    }
+
+    /**
+     *
+     * @param organization
+     * The organization
+     */
+    public void setOrganization(String organization) {
+        this.organization = organization;
     }
 
 }
