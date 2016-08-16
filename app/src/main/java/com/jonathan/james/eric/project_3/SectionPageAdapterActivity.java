@@ -74,7 +74,8 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements Nav
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == someid) {
+        //ToDo add
+        if (id) {
             // Handle the camera action
         }
 
