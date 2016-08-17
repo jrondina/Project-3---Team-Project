@@ -14,6 +14,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
+public class SectionPageAdapterActivity extends AppCompatActivity {
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
 import com.jonathan.james.eric.project_3.presenters.SectionsPagerAdapter;
@@ -35,6 +39,8 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_section_page_adapter);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -143,5 +149,13 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
     @Override
     public void onCardClick(Article a) {
 
+        //ToDo add code for setting up Fragment Pager Adapter
+
+        APIServices apiservice = new APIServices(); //instantiates an API Service
+
+        /* IGNORE THIS, DEBUG STUFF
+        apiservice.articleSearch("harambe", apiservice.retrofitInit(this));
+        apiservice.topNews("home",apiservice.retrofitInit(this));
+        */
     }
 }
