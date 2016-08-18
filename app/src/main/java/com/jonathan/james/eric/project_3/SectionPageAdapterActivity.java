@@ -16,12 +16,9 @@ import android.view.View;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
-
-public class SectionPageAdapterActivity extends AppCompatActivity {
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
 import com.jonathan.james.eric.project_3.presenters.SectionsPagerAdapter;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -40,7 +37,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_section_page_adapter);
         FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
+        //AppEventsLogger.activateApp(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
