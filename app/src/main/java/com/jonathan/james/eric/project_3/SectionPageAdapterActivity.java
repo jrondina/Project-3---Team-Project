@@ -1,5 +1,8 @@
 package com.jonathan.james.eric.project_3;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.NavigationView;
@@ -63,6 +66,12 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
     private FragmentManager mManager;
 
+    long NOTIFICATION_INTERVAL = 10_800_000; //3 hours in milliseconds
+
+    /* for facebook sharing, not in use
+    CallbackManager callbackManager;
+    ShareDialog shareDialog;
+    */
     private APIServices mAPIServices;
     private ArrayList<Article> mCurrentSection;
     private ArrayList<Article> mCurrentQuery;
@@ -82,17 +91,25 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_section_page_adapter);
-        FacebookSdk.sdkInitialize(getApplicationContext());
+
+        /*FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
-        //AppEventsLogger.activateApp(this);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+        //AppEventsLogger.activateApp(this); */ //used for facebook but don't need it
+
+        //JobScheduler for jobs
+        JobScheduler jobScheduler =
+                (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(noteScheduler()); //schedules notifications at intervals
+
 
 
 
         mAPIServices = new APIServices(); //instantiates an API Service
         Log.d(TAG, "onCreate: getting API services");
+
+        mViewPager = (ViewPager) findViewById(R.id.section_fragment_container);
+        mTabLayout = (TabLayout) findViewById(R.id.section_tabs);
 
         //Set up the Fragment Manager
         mManager = getSupportFragmentManager();
@@ -216,14 +233,11 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     @Override
     public void onShareClick(Article a) {
 
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, a.getUrl());
-        startActivity(intent);
-
         //these are no longer in use
         //fbShare(a.getUrl());
         //sendTweet(a.getUrl());
+
+        shareLink(a.getUrl());
 
     }
 
@@ -233,9 +247,27 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
         Log.d(TAG, "onCardClick: opening article detail");
         mManager.beginTransaction().addToBackStack("Sections").add(R.id.section_fragment_container,
                 ArticleDetailFragment.getInstance(this, this, this, mCurrentSection.get(position))).commit();
-        //TODO
+
     }
 
+    private void shareLink(String url) {
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, url);
+        startActivity(intent);
+
+    }
+
+    public JobInfo noteScheduler() {
+        JobInfo job = new JobInfo.Builder(1,
+                new ComponentName(getPackageName(),
+                        NotifyService.class.getName()))
+                .setPeriodic(NOTIFICATION_INTERVAL) // in milliseconds
+                .build();
+
+        return job;
+    }
     //get the article list for the current section
     @Override
     public ArrayList<Article> getArticles(String sectionName) {
