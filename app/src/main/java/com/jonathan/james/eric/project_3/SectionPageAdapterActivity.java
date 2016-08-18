@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -39,6 +40,8 @@ import com.jonathan.james.eric.project_3.presenters.SectionsPagerAdapter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -47,6 +50,8 @@ import twitter4j.auth.AccessToken;
 
 public class SectionPageAdapterActivity extends AppCompatActivity implements APIFetcher, SwipeListener,
         NavigationView.OnNavigationItemSelectedListener, ArticleListener, SectionCardListener {
+
+    private static final String TAG = "MainActivity";
 
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -85,13 +90,15 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
 
         mAPIServices = new APIServices(); //instantiates an API Service
-
+        Log.d(TAG, "onCreate: getting API services");
 
 
         //Set up the Fragment Manager
         mManager = getSupportFragmentManager();
 
-
+        //init Realm Default Instance
+        RealmConfiguration config = new RealmConfiguration.Builder(this.getApplicationContext()).build();
+        Realm.setDefaultConfiguration(config);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -118,8 +125,9 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
         mSectionNames.add("politics");
         mSectionNames.add("world");
 
+        Log.d(TAG, "onResume: Creating the manager and Fragments");
         mManager.beginTransaction().add(R.id.main_content_container, SectionViewPagerFragment.getInstance(mManager,
-                mSectionNames, this, this, this));
+                mSectionNames, this, this, this)).commit();
     }
 
     @Override
@@ -208,8 +216,9 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     //Open the article detail view
     @Override
     public void onCardClick(int position) {
+        Log.d(TAG, "onCardClick: opening article detail");
         mManager.beginTransaction().addToBackStack("Sections").add(R.id.section_fragment_container,
-                ArticleDetailFragment.getInstance(this, this, mCurrentSection.get(position)));
+                ArticleDetailFragment.getInstance(this, this, mCurrentSection.get(position))).commit();
         //TODO
     }
 
@@ -217,6 +226,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     @Override
     public ArrayList<Article> getArticles(String sectionName) {
         //mCurrentSection = new ArrayList(mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this)));
+        Log.d(TAG, "getArticles: returning an article list");
 
         //test code
         mCurrentSection = new ArrayList<Article>();
