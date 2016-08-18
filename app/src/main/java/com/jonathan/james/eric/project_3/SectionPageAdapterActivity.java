@@ -148,6 +148,8 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            //TODO finish intent to go to Settings page
+            Intent settingsIntent = new Intent();
             return true;
         }
         if (id == R.id.action_search){
@@ -180,7 +182,14 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
     @Override
     public void onBookMarkClick(Article a) {
-        RealmUtility.insertArticle(a);
+        RealmUtility realmUtility = new RealmUtility();
+        //toggle the boolean for is bookmarked
+        a.setBookmark(!a.isBookmark());
+        if(a.isBookmark()) {
+            realmUtility.insertArticle(a);
+        } else{
+            realmUtility.deleteArticle(a);
+        }
     }
 
     @Override
@@ -208,7 +217,22 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     //get the article list for the current section
     @Override
     public ArrayList<Article> getArticles(String sectionName) {
-        mCurrentSection = new ArrayList(mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this)));
+        //mCurrentSection = new ArrayList(mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this)));
+
+        //test code
+        mCurrentSection = new ArrayList<Article>();
+        Article a = new Article();
+        a.setHeadline("Test Headline");
+        a.setByline("By Test Author");
+        a.setSection("world");
+        a.setUrl("http://www.nytimes.com/2016/08/13/sports/olympics/a-closer-look-at-simone-manuel-olympic-medalist-history-maker.html");
+        Multimedia m = new Multimedia();
+        m.setThumbnailImage("https://static01.nyt.com/images/2016/08/17/magazine/17mag-cholera-1/17mag-cholera-1-thumbLarge.jpg");
+        m.setRegularImage("https://static01.nyt.com/images/2016/08/17/magazine/17mag-cholera-1/17mag-cholera-1-superJumbo.jpg");
+        m.setCaption("Test Image");
+        a.setLeadimage(m);
+        mCurrentSection.add(a);
+        mCurrentSection.add(a);
         return mCurrentSection;
     }
 

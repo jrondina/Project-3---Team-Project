@@ -6,7 +6,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 
 import com.jonathan.james.eric.project_3.Article;
+import com.jonathan.james.eric.project_3.RealmUtility;
 import com.jonathan.james.eric.project_3.SectionFragment;
+import com.jonathan.james.eric.project_3.UserPreferences;
 import com.jonathan.james.eric.project_3.interfaces.APIFetcher;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
@@ -14,13 +16,14 @@ import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 /**
  * Created by Jonathan Taylor on 8/15/16.
  */
-public class SectionsPagerAdapter extends FragmentPagerAdapter /*implements RealmChangeListener<UserPreferences>,
-                                    RealmChangeListener<RealmResults>*/{
+public class SectionsPagerAdapter extends FragmentPagerAdapter implements RealmChangeListener<UserPreferences>,
+        RealmChangeListener<RealmResults> {
 
     //ToDo change to UserPreferences Object and use the Section object list
     private ArrayList<String> mSectionNames;
@@ -28,6 +31,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter /*implements Real
     private SectionCardListener mSectionCardListener;
     private ArticleListener mArticleListener;
     private APIFetcher mFetcher;
+
+    private UserPreferences
 
 
     public SectionsPagerAdapter(FragmentManager fm, ArrayList<String> sectionNames, APIFetcher fetcher,
@@ -46,7 +51,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter /*implements Real
 
         ArrayList<Article> articles;
         if(mSectionNames.get(position).equals("bookmarks")){
-            RealmResults<Article> realmArticles = RealmUtility.getArticles();
+            RealmUtility realmUtility = new RealmUtility();
+            RealmResults<Article> realmArticles = realmUtility.getBookmarkedArticles();
             realmArticles.addChangeListener(this);
             //messy method to convert the RealmResults to ArrayList... Probably needs to be refactored
             articles = new ArrayList<>(Arrays.asList((Article[])realmArticles.toArray()));
@@ -70,8 +76,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter /*implements Real
     }
 
     //Listener to see if the User changed their UserPreferences for either Sections or Sources
-//    @Override
-//    public void onChange(UserPreferences element) {
-//        notifyDataSetChanged();
-//    }
+    @Override
+    public void onChange(UserPreferences element) {
+        notifyDataSetChanged();
+    }
 }
