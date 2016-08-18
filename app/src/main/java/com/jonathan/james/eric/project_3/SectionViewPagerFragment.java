@@ -15,7 +15,7 @@ import com.jonathan.james.eric.project_3.presenters.SectionsPagerAdapter;
 /**
  * Created by Jonathan Taylor on 8/18/16.
  */
-public class SectionViewFragment extends Fragment {
+public class SectionViewPagerFragment extends Fragment {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -27,13 +27,13 @@ public class SectionViewFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.app_bar_section_page_adapter, container, false);
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         // Get a reference to the ViewPager
-        mViewPager = (ViewPager) rootView.findViewById(R.id.container);
+        mViewPager = (ViewPager) rootView.findViewById(R.id.section_fragment_container);
 
         // Get a reference to the TabLayout
-        tabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
+        tabLayout = (TabLayout) rootView.findViewById(R.id.section_tabs);
 
         return rootView;
 
