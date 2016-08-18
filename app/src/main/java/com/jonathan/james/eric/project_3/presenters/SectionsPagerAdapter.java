@@ -5,18 +5,27 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 
+import com.jonathan.james.eric.project_3.APIServices;
+import com.jonathan.james.eric.project_3.Article;
 import com.jonathan.james.eric.project_3.SectionFragment;
+import com.jonathan.james.eric.project_3.interfaces.APIFetcher;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
+import com.jonathan.james.eric.project_3.models.TopNews.TopNewsList;
+import com.jonathan.james.eric.project_3.services.TopNewsNYT;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import io.realm.RealmChangeListener;
+import io.realm.RealmList;
+import io.realm.RealmResults;
 
 /**
  * Created by Jonathan Taylor on 8/15/16.
  */
-public class SectionsPagerAdapter extends FragmentPagerAdapter /*implements RealmChangeListener<UserPreferences>*/{
+public class SectionsPagerAdapter extends FragmentPagerAdapter /*implements RealmChangeListener<UserPreferences>,
+                                    RealmChangeListener<RealmResults>*/{
 
     //ToDo change to UserPreferences Object and use the Section object list
     private ArrayList<String> mSectionNames;
@@ -24,21 +33,37 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter /*implements Real
     private SectionCardListener mSectionCardListener;
     private ArticleListener mArticleListener;
 
+    private APIFetcher mFetcher;
 
-    public SectionsPagerAdapter(FragmentManager fm, ArrayList<String> sectionNames,
+
+    public SectionsPagerAdapter(FragmentManager fm, ArrayList<String> sectionNames, APIFetcher fetcher,
                                 SectionCardListener cardListener, ArticleListener articleListener) {
         super(fm);
         mSectionNames = sectionNames;
 
         mSectionCardListener = cardListener;
         mArticleListener = articleListener;
+        mFetcher = fetcher;
 
     }
 
     @Override
     public Fragment getItem(int position) {
-        //ToDo change to use Section object
-        return SectionFragment.getInstance(mSectionNames.get(position), mSectionCardListener, mArticleListener);
+        //ToDo change to use Section object + pull article list from the API
+
+        ArrayList<Article> articles;
+        if(mSectionNames.get(position).equals("bookmarks")){
+            RealmResults<Article> realmArticles = RealmUtility.getArticles();
+            realmArticles.addChangeListener(this);
+            //messy method to convert the RealmResults to ArrayList... Probably needs to be refactored
+            articles = new ArrayList<>(Arrays.asList((Article[])realmArticles.toArray()));
+        } else {
+            //get the articles via an interface in the ParentActivity
+            articles = mFetcher.getTopNewsArticles(mSectionNames.get(position));
+        }
+
+        return SectionFragment.getInstance(mSectionNames.get(position), articles,
+                mSectionCardListener, mArticleListener);
     }
 
     @Override

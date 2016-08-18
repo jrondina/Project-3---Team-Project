@@ -45,7 +45,7 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
         holder.setCardOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mCardListener.onCardClick(mArticles.get(holder.getAdapterPosition()));
+                mCardListener.onCardClick(mArticles.get(holder.getAdapterPosition()), );
             }
         });
 
@@ -77,5 +77,10 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
     @Override
     public int getItemCount() {
         return mArticles.size();
+    }
+
+    public void changeArticleList(ArrayList<Article> articles){
+        mArticles = articles;
+        notifyDataSetChanged();
     }
 }
