@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import com.jonathan.james.eric.project_3.interfaces.APIFetcher;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
+import com.jonathan.james.eric.project_3.interfaces.ToolbarLoadedCallback;
 import com.jonathan.james.eric.project_3.presenters.SectionsPagerAdapter;
 
 import java.util.ArrayList;
@@ -32,22 +33,22 @@ public class SectionViewPagerFragment extends Fragment {
     private Toolbar toolbar;
 
     private FragmentManager mManager;
-    private ArrayList<String> mSectionNames;
 
     private APIFetcher mFetcher;
     private SectionCardListener mSectionCardListener;
     private ArticleListener mArticleListener;
+    private ToolbarLoadedCallback mCallback;
 
 
-    public static SectionViewPagerFragment getInstance(FragmentManager manager, ArrayList<String> sections,
-                                                       APIFetcher fetcher, SectionCardListener cardListener,
-                                                       ArticleListener articleListener){
+    public static SectionViewPagerFragment getInstance(FragmentManager manager, APIFetcher fetcher,
+                                                       SectionCardListener cardListener,
+                                                       ArticleListener articleListener, ToolbarLoadedCallback callback){
         SectionViewPagerFragment fragment = new SectionViewPagerFragment();
         fragment.mManager = manager;
-        fragment.mSectionNames = sections;
         fragment.mFetcher = fetcher;
         fragment.mSectionCardListener = cardListener;
         fragment.mArticleListener = articleListener;
+        fragment.mCallback = callback;
         return fragment;
     }
 
@@ -62,6 +63,7 @@ public class SectionViewPagerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.app_bar_section_page_adapter, container, false);
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+        mCallback.ToolbarLoaded(toolbar);
         // Get a reference to the ViewPager
         mViewPager = (ViewPager) rootView.findViewById(R.id.section_fragment_container);
 
@@ -79,7 +81,7 @@ public class SectionViewPagerFragment extends Fragment {
         toolbar.setTitle("UserInfoTabs");
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager(),
+        mSectionsPagerAdapter = new SectionsPagerAdapter(mManager,
                 mFetcher, mSectionCardListener, mArticleListener);
 
         mViewPager.setAdapter(mSectionsPagerAdapter);

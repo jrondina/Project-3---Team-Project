@@ -14,6 +14,7 @@ import android.webkit.WebView;
 
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SwipeListener;
+import com.jonathan.james.eric.project_3.interfaces.ToolbarLoadedCallback;
 
 /**
  * Created by Jonathan Taylor on 8/18/16.
@@ -26,15 +27,17 @@ public class ArticleDetailFragment extends Fragment {
 
     private ArticleListener mArticleListener;
     private SwipeListener mSwipeListener;
+    private ToolbarLoadedCallback mCallback;
 
     private Article mArticle;
 
     public static ArticleDetailFragment getInstance(ArticleListener articleListener, SwipeListener swipeListener,
-                                              Article article){
+                                              ToolbarLoadedCallback callback, Article article){
         ArticleDetailFragment fragment = new ArticleDetailFragment();
         fragment.mArticleListener = articleListener;
         fragment.mSwipeListener = swipeListener;
         fragment.mArticle = article;
+        fragment.mCallback = callback;
         return fragment;
     }
 

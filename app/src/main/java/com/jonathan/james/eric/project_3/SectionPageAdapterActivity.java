@@ -35,6 +35,7 @@ import com.jonathan.james.eric.project_3.interfaces.APIFetcher;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
 import com.jonathan.james.eric.project_3.interfaces.SwipeListener;
+import com.jonathan.james.eric.project_3.interfaces.ToolbarLoadedCallback;
 import com.jonathan.james.eric.project_3.presenters.SectionsPagerAdapter;
 
 import java.io.IOException;
@@ -42,6 +43,7 @@ import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -49,7 +51,7 @@ import twitter4j.auth.AccessToken;
 
 
 public class SectionPageAdapterActivity extends AppCompatActivity implements APIFetcher, SwipeListener,
-        NavigationView.OnNavigationItemSelectedListener, ArticleListener, SectionCardListener {
+        NavigationView.OnNavigationItemSelectedListener, ArticleListener, SectionCardListener, ToolbarLoadedCallback {
 
     private static final String TAG = "MainActivity";
 
@@ -84,14 +86,13 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
         callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
         //AppEventsLogger.activateApp(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
 
 
 
         mAPIServices = new APIServices(); //instantiates an API Service
         Log.d(TAG, "onCreate: getting API services");
-
 
         //Set up the Fragment Manager
         mManager = getSupportFragmentManager();
@@ -100,34 +101,47 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
         RealmConfiguration config = new RealmConfiguration.Builder(this.getApplicationContext()).build();
         Realm.setDefaultConfiguration(config);
 
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        //initialize the UserPreferences object
+        if(new RealmUtility().getUserPreferences() == null) {
+            initUserPrefs();
+        }
 
 
+    }
+
+    //
+    private void initUserPrefs() {
+        UserPreferences userPreferences = new UserPreferences();
+        RealmList<Section> sections = new RealmList<>();
+        Section home = new Section();
+        home.setActive(true);
+        home.setKey("home");
+        home.setSectionName("Home");
+        sections.add(home);
+
+
+        RealmList<Source> sources = new RealmList<>();
+        Source s = new Source();
+        s.setName("New York Times");
+        s.setActive(true);
+        sources.add(s);
+
+        userPreferences.setSectionList(sections);
+        userPreferences.setSourceList(sources);
+        userPreferences.setUserName("default");
+
+        new RealmUtility().insertUserPreferences(userPreferences);
+        Log.d(TAG, "initUserPrefs: saving user preferences to the database" );
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        //TestCode
-        ArrayList<String> mSectionNames = new ArrayList<>();
-        mSectionNames.add("top news");
-        mSectionNames.add("technology");
-        mSectionNames.add("science");
-        mSectionNames.add("politics");
-        mSectionNames.add("world");
 
         Log.d(TAG, "onResume: Creating the manager and Fragments");
         mManager.beginTransaction().add(R.id.main_content_container, SectionViewPagerFragment.getInstance(mManager,
-                mSectionNames, this, this, this)).commit();
+                this, this, this, this)).commit();
     }
 
     @Override
@@ -218,35 +232,47 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     public void onCardClick(int position) {
         Log.d(TAG, "onCardClick: opening article detail");
         mManager.beginTransaction().addToBackStack("Sections").add(R.id.section_fragment_container,
-                ArticleDetailFragment.getInstance(this, this, mCurrentSection.get(position))).commit();
+                ArticleDetailFragment.getInstance(this, this, this, mCurrentSection.get(position))).commit();
         //TODO
     }
 
     //get the article list for the current section
     @Override
     public ArrayList<Article> getArticles(String sectionName) {
-        //mCurrentSection = new ArrayList(mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this)));
+        mCurrentSection = new ArrayList(mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this)));
         Log.d(TAG, "getArticles: returning an article list");
 
         //test code
-        mCurrentSection = new ArrayList<Article>();
-        Article a = new Article();
-        a.setHeadline("Test Headline");
-        a.setByline("By Test Author");
-        a.setSection("world");
-        a.setUrl("http://www.nytimes.com/2016/08/13/sports/olympics/a-closer-look-at-simone-manuel-olympic-medalist-history-maker.html");
-        Multimedia m = new Multimedia();
-        m.setThumbnailImage("https://static01.nyt.com/images/2016/08/17/magazine/17mag-cholera-1/17mag-cholera-1-thumbLarge.jpg");
-        m.setRegularImage("https://static01.nyt.com/images/2016/08/17/magazine/17mag-cholera-1/17mag-cholera-1-superJumbo.jpg");
-        m.setCaption("Test Image");
-        a.setLeadimage(m);
-        mCurrentSection.add(a);
-        mCurrentSection.add(a);
+//        mCurrentSection = new ArrayList<Article>();
+//        Article a = new Article();
+//        a.setHeadline("Test Headline");
+//        a.setByline("By Test Author");
+//        a.setSection("world");
+//        a.setUrl("http://www.nytimes.com/2016/08/13/sports/olympics/a-closer-look-at-simone-manuel-olympic-medalist-history-maker.html");
+//        Multimedia m = new Multimedia();
+//        m.setThumbnailImage("https://static01.nyt.com/images/2016/08/17/magazine/17mag-cholera-1/17mag-cholera-1-thumbLarge.jpg");
+//        m.setRegularImage("https://static01.nyt.com/images/2016/08/17/magazine/17mag-cholera-1/17mag-cholera-1-superJumbo.jpg");
+//        m.setCaption("Test Image");
+//        a.setLeadimage(m);
+//        mCurrentSection.add(a);
+//        mCurrentSection.add(a);
         return mCurrentSection;
     }
 
     @Override
     public Article onSwipe(int direction) {
         return null;
+    }
+
+    @Override
+    public void ToolbarLoaded(Toolbar toolbar) {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 }
