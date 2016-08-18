@@ -14,15 +14,14 @@ import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
 import com.jonathan.james.eric.project_3.presenters.SectionRecyclerViewAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Jonathan Taylor on 8/15/16.
  */
 public class SectionFragment extends Fragment {
 
-    private String mSectionName;
-
-    ArrayList<Article> mArticles;
+    private List<Article> mArticles;
 
     private RecyclerView mRecyclerView;
     private SectionRecyclerViewAdapter mAdapter;
@@ -30,10 +29,9 @@ public class SectionFragment extends Fragment {
     private SectionCardListener mCardViewListener;
     private ArticleListener mArticleListener;
 
-    public static SectionFragment getInstance(String sectionName, ArrayList<Article> articles,
+    public static SectionFragment getInstance(List<Article> articles,
                                               SectionCardListener sectionCardListener, ArticleListener articleListener){
         SectionFragment fragment = new SectionFragment();
-        fragment.mSectionName = sectionName;
         fragment.mCardViewListener = sectionCardListener;
         fragment.mArticleListener = articleListener;
         fragment.mArticles = articles;

@@ -11,13 +11,14 @@ import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Jonathan Taylor on 8/15/16.
  */
 public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionViewHolder> {
 
-    private ArrayList<Article> mArticles;
+    private List<Article> mArticles;
 
     private ArticleListener mArticleListener;
     private SectionCardListener mCardListener;
@@ -25,7 +26,7 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
     //TODO add hashtable for checking articles
 
 
-    public SectionRecyclerViewAdapter(ArrayList<Article> mArticles, ArticleListener articleListener,
+    public SectionRecyclerViewAdapter(List<Article> mArticles, ArticleListener articleListener,
                                       SectionCardListener sectionCardListener) {
         this.mArticles = mArticles;
         mArticleListener = articleListener;

@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -49,6 +51,11 @@ public class SectionViewPagerFragment extends Fragment {
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Nullable
     @Override
@@ -72,11 +79,17 @@ public class SectionViewPagerFragment extends Fragment {
         toolbar.setTitle("UserInfoTabs");
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager(), mSectionNames,
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager(),
                 mFetcher, mSectionCardListener, mArticleListener);
 
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         tabLayout.setupWithViewPager(mViewPager);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.section_page_adapter, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }
