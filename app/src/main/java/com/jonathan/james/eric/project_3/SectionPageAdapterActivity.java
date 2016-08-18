@@ -52,14 +52,6 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
         mAPIServices = new APIServices(); //instantiates an API Service
 
-        /* IGNORE THIS, DEBUG STUFF
-        apiservice.articleSearch("harambe", apiservice.retrofitInit(this));
-        apiservice.topNews("home",apiservice.retrofitInit(this));
-        */
-
-
-        mViewPager = (ViewPager) findViewById(R.id.section_fragment_container);
-        mTabLayout = (TabLayout) findViewById(R.id.section_tabs);
 
 
         //Set up the Fragment Manager
@@ -92,10 +84,8 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
         mSectionNames.add("politics");
         mSectionNames.add("world");
 
-        mSectionsPagerAdapter = new SectionsPagerAdapter(mManager, mSectionNames, this, this, this);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        mTabLayout.setupWithViewPager(mViewPager);
+        mManager.beginTransaction().add(R.id.main_content_container, SectionViewPagerFragment.getInstance(mManager,
+                mSectionNames, this, this, this));
     }
 
     @Override
@@ -125,6 +115,12 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+        if (id == R.id.action_search){
+
+        }
+        if (id == R.id.action_share){
+
         }
 
         return super.onOptionsItemSelected(item);

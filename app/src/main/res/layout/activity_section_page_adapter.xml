@@ -8,8 +8,9 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
-    <include
-        layout="@layout/app_bar_section_page_adapter"
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/main_content_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
