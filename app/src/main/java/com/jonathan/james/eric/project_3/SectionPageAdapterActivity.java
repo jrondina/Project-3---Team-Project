@@ -1,5 +1,7 @@
 package com.jonathan.james.eric.project_3;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
@@ -14,13 +16,30 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
+import com.github.scribejava.apis.TwitterApi;
+import com.github.scribejava.core.builder.ServiceBuilder;
+import com.github.scribejava.core.model.OAuth1AccessToken;
+import com.github.scribejava.core.model.OAuth1RequestToken;
+import com.github.scribejava.core.model.OAuthRequest;
+import com.github.scribejava.core.model.Response;
+import com.github.scribejava.core.model.Verb;
+import com.github.scribejava.core.oauth.OAuth10aService;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
 import com.jonathan.james.eric.project_3.presenters.SectionsPagerAdapter;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.auth.AccessToken;
 
 public class SectionPageAdapterActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, ArticleListener, SectionCardListener {
@@ -32,11 +51,24 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
 
     private FragmentManager mManager;
 
+    CallbackManager callbackManager;
+    ShareDialog shareDialog;
+
+
+    /*Twiter OAuth stuff no longer in use since we're doing intent for sharing
+    String CONSUMER_KEY_TW = "6FCKnOeCVFehIiunrWnL6itSO";
+    String CONSUMER_SECRET_TW = " c7kGW8TLiHywj367U1b8ScCSE1g86NZp2H1A3FHasfXrXlNf5u";
+    String ACCESS_TOKEN_TW = "";
+    String ACCESS_SECRET_TW = "";
+    */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_section_page_adapter);
         FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
+        shareDialog = new ShareDialog(this);
         //AppEventsLogger.activateApp(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -141,6 +173,15 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
     @Override
     public void onShareClick(Article a) {
 
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, a.getUrl());
+        startActivity(intent);
+
+        //these are no longer in use
+        //fbShare(a.getUrl());
+        //sendTweet(a.getUrl());
+
     }
 
     @Override
@@ -148,11 +189,74 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
 
         //ToDo add code for setting up Fragment Pager Adapter
 
-        APIServices apiservice = new APIServices(); //instantiates an API Service
 
-        /* IGNORE THIS, DEBUG STUFF
-        apiservice.articleSearch("harambe", apiservice.retrofitInit(this));
-        apiservice.topNews("home",apiservice.retrofitInit(this));
-        */
+
+
     }
+
+
+    //Share to twitter and FB stuff not in use because we're just sharing via intent
+    /*
+
+    private void fbShare(String url) {
+
+        if (ShareDialog.canShow(ShareLinkContent.class)) {
+            ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                    //.setContentTitle("Hello Facebook")
+                    //.setContentDescription(
+                    //        "The 'Hello Facebook' sample  showcases simple Facebook integration")
+                    .setContentUrl(Uri.parse(url))
+                    .build();
+
+            shareDialog.show(linkContent);
+        }
+
+    }
+
+    private void sendTweet(String url) {
+
+        try {
+            Twitter twitter = new TwitterFactory().getInstance();
+
+            twitter.setOAuthConsumer(CONSUMER_KEY_TW, CONSUMER_SECRET_TW);
+
+            AccessToken accessToken = new AccessToken(ACCESS_TOKEN_TW, ACCESS_SECRET_TW);
+            twitter.setOAuthAccessToken(accessToken);
+
+            twitter.updateStatus(url);
+
+        } catch (TwitterException te) {
+            te.printStackTrace();
+        }
+    }
+
+    private void loginTwitter() throws IOException {
+
+        final OAuth10aService service = new ServiceBuilder()
+                .apiKey(CONSUMER_KEY_TW)
+                .apiSecret(CONSUMER_SECRET_TW)
+                .build(TwitterApi.instance());
+
+        final OAuth1RequestToken requestToken = service.getRequestToken();
+
+        String authUrl = service.getAuthorizationUrl(requestToken);
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, authUrl);
+        startActivity(intent);
+
+        String OAuthVerifier = "";
+
+        final OAuth1AccessToken accessToken = service.getAccessToken(
+                requestToken, OAuthVerifier);
+
+        final OAuthRequest request = new OAuthRequest(Verb.GET,
+                "https://api.twitter.com/1.1/account/verify_credentials.json", service);
+        service.signRequest(accessToken, request); // the access token from step 4
+        final Response response = request.send();
+        System.out.println(response.getBody());
+
+
+    }*/
 }

@@ -29,3 +29,9 @@ If you have questions about whether or not your work adheres to these guidelines
 * Zachary Arden, James DeLayo, Jane Grissom - [Vice](Vice)
 * Jimmy Choy, Wansang Lim, Raymour Radhakrishnan - [Yelp](Yelp)
 * Jordan Goldberg, Joey Mejias, David Stone - [Yelp](Yelp)
+
+---
+
+## Licensing
+1. All content is licensed under a CC-BY-NC-SA 4.0 license. 
+2. All software code is licensed under GNU GPLv3. For commercial use or alternative licensing, please contact legal@ga.co.
