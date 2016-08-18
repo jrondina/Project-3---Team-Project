@@ -13,6 +13,7 @@ import com.jonathan.james.eric.project_3.models.TopNews.TopNewsList;
 import com.jonathan.james.eric.project_3.services.ArticleSearchNYT;
 import com.jonathan.james.eric.project_3.services.TopNewsNYT;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,9 +72,11 @@ public class APIServices {
         return retrofit;
     }
 
-    public void articleSearch(String query, Retrofit retrofit) {
+    public List<Article> articleSearch(String query, Retrofit retrofit) {
 
         Log.i(TAG, "articleSearch: Starting search for: " + query);
+
+        final List formattedList = new ArrayList();
 
         options = new HashMap<>();
         options.put("q",query);
@@ -97,43 +100,26 @@ public class APIServices {
                 String imgThumb = "";
                 String imgLarge = "";
 
-                for (Doc article: docs
-                        ) {
+                for (Doc article: docs) {
+                    Article newArticle = new Article();
+                    Multimedia newMultimedia = new Multimedia();
 
-                    Log.i(TAG, LOG_DIVIDER);
-
-                    Log.i(TAG, "Headline: " + article.getHeadline().getMain());
-                    Log.i(TAG, "Published on: " + article.getPubDate());
+                    newArticle.setArticleSource("New York Times");
+                    newArticle.setLeadimage(newMultimedia);
+                    newArticle.setHeadline(article.getHeadline().getMain());
+                    newArticle.setDate(article.getPubDate());
+                    newArticle.setLeadParagraph(article.getAbstract());
+                    newArticle.setSection(article.getSectionName());
+                    newArticle.setUrl(article.getWebUrl());
+                    /*TODO: set byline
                     try{
-                            Log.i(TAG, "By: " + article.getByline().getOriginal());
-
-                    }catch (NullPointerException e) {
-                        Log.e(TAG, "No byline" );
+                    newArticle.setByline(article.getByline().getOriginal());
                     }
-                    Log.i(TAG, "URL: " + article.getWebUrl());
-                    if (article.getMultimedia().size() > 2) {
+                    catch (NullPointerException e) {
+                    Log.e(TAG, "No byline" );
+                    }*/
 
-                        for (Multimedium image: article.getMultimedia()
-                             ) {
-                            if (image.getSubtype().equals("thumbnail") || image.getSubtype().equals("wide")) {
-                                imgThumb = image.getUrl();
-                            }
-                            if (image.getSubtype().equals("xlarge")) {
-                                imgLarge = image.getUrl();
-                            }
-
-                        }
-                        if (!imgThumb.equals("")) {
-                            Log.i(TAG, "ThumbURL: " + "https://static01.nyt.com/" + imgThumb);
-                        }
-                        if (!imgLarge.equals("")) {
-                            Log.i(TAG, "LargeURL: " + "https://static01.nyt.com/" +
-                                    imgLarge);
-                        }
-
-                    }
-
-                    Log.i(TAG, LOG_DIVIDER);
+                    formattedList.add(newArticle);
                 }
             }
 
@@ -144,10 +130,12 @@ public class APIServices {
 
             }
         });
-
+        return formattedList;
     }
 
-    public void topNews(String section, Retrofit retrofit) {
+    public List<Article> topNews(String section, Retrofit retrofit) {
+
+        final List formattedList = new ArrayList();
 
 
         //create instance of TopNewsNYT and get Call
@@ -166,20 +154,27 @@ public class APIServices {
 
                 for (Result article:list) {
 
-                    Log.i(TAG, LOG_DIVIDER);
+                    Article newArticle = new Article();
+                    Multimedia newMultimedia = new Multimedia();
 
-                    Log.i(TAG, "Headline: " + article.getTitle());
-                    Log.i(TAG, "By: " + article.getByline());
-                    Log.i(TAG, "Abstract: " + article.getAbstract());
-                    Log.i(TAG, "URL: " + article.getUrl());
                     if (article.getMultimedia().size() != 0) {
-                        Log.i(TAG, "ThumbURL: " +
+                        newMultimedia.setCaption(article.getMultimedia().get(0).getCaption());
+                        newMultimedia.setThumbnailImage("ThumbURL: " +
                                 article.getMultimedia().get(IMG_TOP_THUMB).getUrl());
-                        Log.i(TAG, "LargeURL: " +
+                        newMultimedia.setRegularImage("LargeURL: " +
                                 article.getMultimedia().get(IMG_TOP_LARGE).getUrl());
                     }
 
-                    Log.i(TAG, LOG_DIVIDER);
+                    newArticle.setArticleSource("New York Times");
+                    newArticle.setLeadimage(newMultimedia);
+                    newArticle.setHeadline(article.getTitle());
+                    newArticle.setDate(article.getPublishedDate());
+                    newArticle.setLeadParagraph(article.getAbstract());
+                    newArticle.setSection(article.getSection());
+                    newArticle.setUrl(article.getUrl());
+
+                    formattedList.add(newArticle);
+
                 }
             }
 
@@ -191,7 +186,7 @@ public class APIServices {
 
             }
         });
-
+        return formattedList;
     }
 
 }

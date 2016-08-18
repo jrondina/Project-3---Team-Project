@@ -44,7 +44,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_section_page_adapter);
         FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
+        //AppEventsLogger.activateApp(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
