@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jonathan.james.eric.project_3.interfaces.APICallback;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
 import com.jonathan.james.eric.project_3.presenters.SectionRecyclerViewAdapter;
@@ -20,7 +21,7 @@ import java.util.List;
 /**
  * Created by Jonathan Taylor on 8/15/16.
  */
-public class SectionFragment extends Fragment {
+public class SectionFragment extends Fragment implements APICallback{
 
     private static final String TAG = "SectionFragment";
 
@@ -72,5 +73,10 @@ public class SectionFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+    }
+
+    @Override
+    public void responseFinished(List<Article> responseList) {
+        changeArticleList(new ArrayList<Article>(responseList));
     }
 }
