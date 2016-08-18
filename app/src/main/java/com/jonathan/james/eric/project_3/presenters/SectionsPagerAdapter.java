@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.jonathan.james.eric.project_3.Article;
 import com.jonathan.james.eric.project_3.SectionFragment;
-import com.jonathan.james.eric.project_3.SectionHolderSingleton;
 import com.jonathan.james.eric.project_3.interfaces.APIFetcher;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;

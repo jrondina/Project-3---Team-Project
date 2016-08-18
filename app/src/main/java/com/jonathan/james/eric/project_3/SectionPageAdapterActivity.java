@@ -27,9 +27,6 @@ import java.util.ArrayList;
 public class SectionPageAdapterActivity extends AppCompatActivity implements APIFetcher,
         NavigationView.OnNavigationItemSelectedListener, ArticleListener, SectionCardListener {
 
-    public static final String ARTICLE_DETAIL_INDEX_EXTRA = "article_detail_index_extra";
-    public static final String FROM_SECTION = "from_section";
-    public static final String FROM_QUERY = "from_query";
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -39,6 +36,8 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     private FragmentManager mManager;
 
     private APIServices mAPIServices;
+    private ArrayList<Article> mCurrentSection;
+    private ArrayList<Article> mCurrentQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +92,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
         mSectionNames.add("politics");
         mSectionNames.add("world");
 
-        mSectionsPagerAdapter = new SectionsPagerAdapter(mManager, mSectionNames, this, this);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(mManager, mSectionNames, this, this, this);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         mTabLayout.setupWithViewPager(mViewPager);
@@ -162,12 +161,13 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     @Override
     public void onCardClick(int position) {
         mManager.beginTransaction().addToBackStack("Sections").add(R.id.section_fragment_container,
-                ArticleDetailFragment.getInstance(this, this, ))
+                ArticleDetailFragment.getInstance(this, this, mCurrentSection.get(position)));
         //TODO
     }
 
     @Override
     public ArrayList<Article> getArticles(String sectionName) {
-        return null;
+        mCurrentSection = new ArrayList(mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this)));
+        return mCurrentSection;
     }
 }
