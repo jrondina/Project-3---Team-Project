@@ -91,6 +91,18 @@ public class RealmUtility implements Closeable{
         });
     }
 
+    public RealmResults<Article> getBookmarkedArticles(){
+        RealmResults<Article> articles = realm.where(Article.class).findAll();
+
+        return articles;
+
+    }
+
+    public UserPreferences getUserPreferences(){
+        UserPreferences preferences = realm.where(UserPreferences.class).findAll().first();
+        return preferences;
+    }
+
     public void createUserPreferences(RealmList<Section> sectionList ,RealmList<Source> sourceList){
 
         UserPreferences up = new UserPreferences();
@@ -145,7 +157,7 @@ public class RealmUtility implements Closeable{
         source.setName(s);
         source.setActive(i);
     }
-
+    /*
     public void insertSource(final Source s){
 
         RealmAsyncTask realmAsyncTask = realm.executeTransactionAsync(new Realm.Transaction() {
@@ -164,6 +176,7 @@ public class RealmUtility implements Closeable{
         });
 
     }
+
 
     public void deleteSource(final Source s){
         final RealmAsyncTask realmAsyncTask = realm.executeTransactionAsync(new Realm.Transaction() {
@@ -185,6 +198,7 @@ public class RealmUtility implements Closeable{
         });
 
     }
+    */
 
     public void createSection(String s, String k, boolean i){
 
@@ -194,7 +208,7 @@ public class RealmUtility implements Closeable{
         section.setActive(i);
 
     }
-
+    /*
     public void insertSection(final Section s){
 
         RealmAsyncTask realmAsyncTask = realm.executeTransactionAsync(new Realm.Transaction() {
@@ -232,6 +246,7 @@ public class RealmUtility implements Closeable{
         });
 
     }
+    */
 
     public void createMultimedia(String t, String r, String c){
 
@@ -240,7 +255,7 @@ public class RealmUtility implements Closeable{
         multimedia.setRegularImage(r);
         multimedia.setCaption(c);
     }
-
+    /*
     public void insertMultimedia (final Multimedia m){
 
         RealmAsyncTask realmAsyncTask = realm.executeTransactionAsync(new Realm.Transaction() {
@@ -262,6 +277,7 @@ public class RealmUtility implements Closeable{
     public void deleteMultimedia(){
 
     }
+    */
 
 
 
