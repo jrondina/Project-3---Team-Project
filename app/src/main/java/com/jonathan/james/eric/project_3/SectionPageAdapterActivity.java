@@ -17,13 +17,14 @@ import android.view.MenuItem;
 import com.facebook.FacebookSdk;
 
 
+import com.jonathan.james.eric.project_3.interfaces.APIFetcher;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
 import com.jonathan.james.eric.project_3.presenters.SectionsPagerAdapter;
 
 import java.util.ArrayList;
 
-public class SectionPageAdapterActivity extends AppCompatActivity implements
+public class SectionPageAdapterActivity extends AppCompatActivity implements APIFetcher,
         NavigationView.OnNavigationItemSelectedListener, ArticleListener, SectionCardListener {
 
     public static final String ARTICLE_DETAIL_INDEX_EXTRA = "article_detail_index_extra";
@@ -51,7 +52,6 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
 
 
         mAPIServices = new APIServices(); //instantiates an API Service
-        SectionHolderSingleton.getInstance().setAPIService(mAPIServices);
 
         /* IGNORE THIS, DEBUG STUFF
         apiservice.articleSearch("harambe", apiservice.retrofitInit(this));
@@ -161,9 +161,13 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
 
     @Override
     public void onCardClick(int position) {
-        Intent articleDetailIntent = new Intent(this, ArticleDetailActivity.class);
-        articleDetailIntent.putExtra(ARTICLE_DETAIL_INDEX_EXTRA, position);
-        startActivity(articleDetailIntent);
+        mManager.beginTransaction().addToBackStack("Sections").add(R.id.section_fragment_container,
+                ArticleDetailFragment.getInstance(this, this, ))
+        //TODO
     }
 
+    @Override
+    public ArrayList<Article> getArticles(String sectionName) {
+        return null;
+    }
 }

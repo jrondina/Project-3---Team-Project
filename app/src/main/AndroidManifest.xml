@@ -29,12 +29,6 @@
         <provider android:authorities="com.facebook.app.FacebookContentProvider1641206849526679"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true" />
-        <activity
-            android:name=".ArticleDetailActivity"
-            android:label="@string/title_activity_article_detail"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTop">
-        </activity>
     </application>
 
 </manifest>

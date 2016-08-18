@@ -28,7 +28,7 @@
             android:title="Entertainment"/>
         <item
             android:id="@+id/bookmarks_section"
-            android:title="Bookmarks"
+            android:title="Bookmarks"/>
     </group>
 
 </menu>

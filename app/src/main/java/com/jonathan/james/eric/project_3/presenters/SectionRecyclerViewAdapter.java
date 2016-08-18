@@ -22,6 +22,8 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
     private ArticleListener mArticleListener;
     private SectionCardListener mCardListener;
 
+    //TODO add hashtable for checking articles
+
 
     public SectionRecyclerViewAdapter(ArrayList<Article> mArticles, ArticleListener articleListener,
                                       SectionCardListener sectionCardListener) {

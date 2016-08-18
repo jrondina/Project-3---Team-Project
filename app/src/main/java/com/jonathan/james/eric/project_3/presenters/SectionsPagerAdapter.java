@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.jonathan.james.eric.project_3.Article;
 import com.jonathan.james.eric.project_3.SectionFragment;
 import com.jonathan.james.eric.project_3.SectionHolderSingleton;
+import com.jonathan.james.eric.project_3.interfaces.APIFetcher;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
 
@@ -27,13 +28,14 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter /*implements Real
 
     private SectionCardListener mSectionCardListener;
     private ArticleListener mArticleListener;
+    private APIFetcher mFetcher;
 
 
-    public SectionsPagerAdapter(FragmentManager fm, ArrayList<String> sectionNames,
+    public SectionsPagerAdapter(FragmentManager fm, ArrayList<String> sectionNames, APIFetcher fetcher,
                                 SectionCardListener cardListener, ArticleListener articleListener) {
         super(fm);
         mSectionNames = sectionNames;
-
+        mFetcher = fetcher;
         mSectionCardListener = cardListener;
         mArticleListener = articleListener;
 
@@ -51,7 +53,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter /*implements Real
             articles = new ArrayList<>(Arrays.asList((Article[])realmArticles.toArray()));
         } else {
             //get an instance of the section singleton to pull the article list from the API
-            articles = SectionHolderSingleton.getInstance().getSectionArticle(mSectionNames.get(position));
+            articles = mFetcher.getArticles(mSectionNames.get(position));
         }
 
         return SectionFragment.getInstance(mSectionNames.get(position), articles,
