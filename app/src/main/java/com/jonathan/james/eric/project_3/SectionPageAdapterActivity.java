@@ -1,5 +1,7 @@
 package com.jonathan.james.eric.project_3;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
@@ -13,7 +15,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
+import com.github.scribejava.apis.TwitterApi;
+import com.github.scribejava.core.builder.ServiceBuilder;
+import com.github.scribejava.core.model.OAuth1AccessToken;
+import com.github.scribejava.core.model.OAuth1RequestToken;
+import com.github.scribejava.core.model.OAuthRequest;
+import com.github.scribejava.core.model.Response;
+import com.github.scribejava.core.model.Verb;
+import com.github.scribejava.core.oauth.OAuth10aService;
 
 
 import com.jonathan.james.eric.project_3.interfaces.APIFetcher;
@@ -22,7 +36,14 @@ import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
 import com.jonathan.james.eric.project_3.interfaces.SwipeListener;
 import com.jonathan.james.eric.project_3.presenters.SectionsPagerAdapter;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.auth.AccessToken;
+
 
 public class SectionPageAdapterActivity extends AppCompatActivity implements APIFetcher, SwipeListener,
         NavigationView.OnNavigationItemSelectedListener, ArticleListener, SectionCardListener {
@@ -39,11 +60,24 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     private ArrayList<Article> mCurrentSection;
     private ArrayList<Article> mCurrentQuery;
 
+    private CallbackManager callbackManager;
+    private ShareDialog shareDialog;
+
+
+    /*Twiter OAuth stuff no longer in use since we're doing intent for sharing
+    String CONSUMER_KEY_TW = "6FCKnOeCVFehIiunrWnL6itSO";
+    String CONSUMER_SECRET_TW = " c7kGW8TLiHywj367U1b8ScCSE1g86NZp2H1A3FHasfXrXlNf5u";
+    String ACCESS_TOKEN_TW = "";
+    String ACCESS_SECRET_TW = "";
+    */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_section_page_adapter);
         FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
+        shareDialog = new ShareDialog(this);
         //AppEventsLogger.activateApp(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -151,6 +185,15 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
     @Override
     public void onShareClick(Article a) {
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, a.getUrl());
+        startActivity(intent);
+
+        //these are no longer in use
+        //fbShare(a.getUrl());
+        //sendTweet(a.getUrl());
 
     }
 
