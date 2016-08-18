@@ -15,6 +15,7 @@ public class Article extends RealmObject {
 
     private String leadParagraph;
     private String headline;
+    private String byline;
     private String source;
     private String section;
     private String date;
@@ -44,6 +45,14 @@ public class Article extends RealmObject {
 
     public void setHeadline(String headline){
         this.headline = headline;
+    }
+
+    public String getByline(){
+        return byline;
+    }
+
+    public void setByline(String byline){
+        this.byline = byline;
     }
 
     public String getArticleSource(){
