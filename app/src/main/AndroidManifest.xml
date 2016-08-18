@@ -11,6 +11,11 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+
+        <service android:name=".NotifyService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="true"/>
+
         <activity android:name=".SectionPageAdapterActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

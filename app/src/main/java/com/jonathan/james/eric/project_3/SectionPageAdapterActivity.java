@@ -1,5 +1,8 @@
 package com.jonathan.james.eric.project_3;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.NavigationView;
@@ -51,9 +54,12 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
 
     private FragmentManager mManager;
 
+    long NOTIFICATION_INTERVAL = 10_800_000; //3 hours in milliseconds
+
+    /* for facebook sharing, not in use
     CallbackManager callbackManager;
     ShareDialog shareDialog;
-
+    */
 
     /*Twiter OAuth stuff no longer in use since we're doing intent for sharing
     String CONSUMER_KEY_TW = "6FCKnOeCVFehIiunrWnL6itSO";
@@ -66,24 +72,25 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_section_page_adapter);
-        FacebookSdk.sdkInitialize(getApplicationContext());
+
+        /*FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
-        //AppEventsLogger.activateApp(this);
+        //AppEventsLogger.activateApp(this); */ //used for facebook but don't need it
+
+        //JobScheduler for jobs
+        JobScheduler jobScheduler =
+                (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(noteScheduler()); //schedules notifications at intervals
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
 
         mViewPager = (ViewPager) findViewById(R.id.section_fragment_container);
         mTabLayout = (TabLayout) findViewById(R.id.section_tabs);
 
-
         //Set up the Fragment Manager
         mManager = getSupportFragmentManager();
-
-
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -173,14 +180,11 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
     @Override
     public void onShareClick(Article a) {
 
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, a.getUrl());
-        startActivity(intent);
-
         //these are no longer in use
         //fbShare(a.getUrl());
         //sendTweet(a.getUrl());
+
+        shareLink(a.getUrl());
 
     }
 
@@ -189,11 +193,26 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
 
         //ToDo add code for setting up Fragment Pager Adapter
 
+    }
 
+    private void shareLink(String url) {
 
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, url);
+        startActivity(intent);
 
     }
 
+    public JobInfo noteScheduler() {
+        JobInfo job = new JobInfo.Builder(1,
+                new ComponentName(getPackageName(),
+                        NotifyService.class.getName()))
+                .setPeriodic(NOTIFICATION_INTERVAL) // in milliseconds
+                .build();
+
+        return job;
+    }
 
     //Share to twitter and FB stuff not in use because we're just sharing via intent
     /*
