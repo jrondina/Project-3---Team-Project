@@ -173,14 +173,11 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
     @Override
     public void onShareClick(Article a) {
 
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, a.getUrl());
-        startActivity(intent);
-
         //these are no longer in use
         //fbShare(a.getUrl());
         //sendTweet(a.getUrl());
+
+        shareLink(a.getUrl());
 
     }
 
@@ -189,8 +186,14 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
 
         //ToDo add code for setting up Fragment Pager Adapter
 
+    }
 
+    private void shareLink(String url) {
 
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, url);
+        startActivity(intent);
 
     }
 
