@@ -3,8 +3,11 @@ package com.jonathan.james.eric.project_3;
 import android.support.annotation.UiThread;
 import android.util.Log;
 
+import com.jonathan.james.eric.project_3.models.BookmarkHashtable;
+
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.HashMap;
 
 import io.realm.Realm;
 import io.realm.RealmAsyncTask;
@@ -96,6 +99,18 @@ public class RealmUtility implements Closeable{
 
         return articles;
 
+    }
+
+    public BookmarkHashtable initBookmarkHashtable(){
+        RealmResults<Article> realmResults = getBookmarkedArticles();
+        HashMap<String,Boolean> bookmarkHashtable = new HashMap<String, Boolean>();
+        for (int i = 0; i < realmResults.size(); i++) {
+            Article article = realmResults.get(i);
+            bookmarkHashtable.put(article.getUrl(),article.isBookmark());
+        }
+        BookmarkHashtable ourInstance = BookmarkHashtable.getInstance();
+        ourInstance.setUrlHashmap(bookmarkHashtable);
+        return ourInstance;
     }
 
     public UserPreferences getUserPreferences(){
