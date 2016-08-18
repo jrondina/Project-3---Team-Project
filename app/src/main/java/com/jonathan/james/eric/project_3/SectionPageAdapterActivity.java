@@ -4,7 +4,6 @@ import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
@@ -19,21 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.facebook.CallbackManager;
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.ShareDialog;
-import com.github.scribejava.apis.TwitterApi;
-import com.github.scribejava.core.builder.ServiceBuilder;
-import com.github.scribejava.core.model.OAuth1AccessToken;
-import com.github.scribejava.core.model.OAuth1RequestToken;
-import com.github.scribejava.core.model.OAuthRequest;
-import com.github.scribejava.core.model.Response;
-import com.github.scribejava.core.model.Verb;
-import com.github.scribejava.core.oauth.OAuth10aService;
-
-
+import com.jonathan.james.eric.project_3.interfaces.APICallback;
 import com.jonathan.james.eric.project_3.interfaces.APIFetcher;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
@@ -41,17 +26,11 @@ import com.jonathan.james.eric.project_3.interfaces.SwipeListener;
 import com.jonathan.james.eric.project_3.interfaces.ToolbarLoadedCallback;
 import com.jonathan.james.eric.project_3.presenters.SectionsPagerAdapter;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.auth.AccessToken;
-
 
 public class SectionPageAdapterActivity extends AppCompatActivity implements APIFetcher, SwipeListener,
         NavigationView.OnNavigationItemSelectedListener, ArticleListener, SectionCardListener, ToolbarLoadedCallback {
@@ -75,17 +54,6 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     private APIServices mAPIServices;
     private ArrayList<Article> mCurrentSection;
     private ArrayList<Article> mCurrentQuery;
-
-    private CallbackManager callbackManager;
-    private ShareDialog shareDialog;
-
-
-    /*Twiter OAuth stuff no longer in use since we're doing intent for sharing
-    String CONSUMER_KEY_TW = "6FCKnOeCVFehIiunrWnL6itSO";
-    String CONSUMER_SECRET_TW = " c7kGW8TLiHywj367U1b8ScCSE1g86NZp2H1A3FHasfXrXlNf5u";
-    String ACCESS_TOKEN_TW = "";
-    String ACCESS_SECRET_TW = "";
-    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -270,8 +238,8 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     }
     //get the article list for the current section
     @Override
-    public ArrayList<Article> getArticles(String sectionName) {
-        mCurrentSection = new ArrayList(mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this)));
+    public void getArticles(String sectionName, APICallback callback) {
+        mCurrentSection = new ArrayList(mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this), callback));
         Log.d(TAG, "getArticles: returning an article list - " + mCurrentSection.size());
 
         //test code
@@ -288,7 +256,6 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 //        a.setLeadimage(m);
 //        mCurrentSection.add(a);
 //        mCurrentSection.add(a);
-        return mCurrentSection;
     }
 
     @Override

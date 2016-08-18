@@ -8,10 +8,14 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.NotificationCompat;
 
+import com.jonathan.james.eric.project_3.interfaces.APICallback;
+
+import java.util.List;
+
 /**
  * Created by jamesrondina on 8/18/16.
  */
-public class NotifyService extends JobService {
+public class NotifyService extends JobService implements APICallback {
 
     private AsyncTask mTask;
 
@@ -46,8 +50,13 @@ public class NotifyService extends JobService {
         APIServices apiService = new APIServices();
 
         //Get the first article in Top News
-        Article breakingNews =
-                apiService.topNews("home", apiService.retrofitInit(getApplicationContext())).get(0);
+
+                apiService.topNews("home", apiService.retrofitInit(getApplicationContext()), this);
+    }
+
+    @Override
+    public void responseFinished(List<Article> responseList) {
+        Article breakingNews = responseList.get(0);
 
         Intent intent = new Intent(this, SectionPageAdapterActivity.class);// use System.currentTimeMillis() to have a unique ID for the pending intent
         PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);

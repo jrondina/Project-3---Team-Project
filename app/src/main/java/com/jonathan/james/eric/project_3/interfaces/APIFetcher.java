@@ -8,5 +8,5 @@ import java.util.ArrayList;
  * Created by Jonathan Taylor on 8/18/16.
  */
 public interface APIFetcher {
-    ArrayList<Article> getArticles(String sectionName);
+    void getArticles(String sectionName, APICallback callback);
 }
