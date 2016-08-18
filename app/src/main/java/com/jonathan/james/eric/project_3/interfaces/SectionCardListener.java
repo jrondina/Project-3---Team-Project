@@ -8,5 +8,5 @@ import java.util.ArrayList;
  * Created by Jonathan Taylor on 8/16/16.
  */
 public interface SectionCardListener {
-    void onCardClick(ArrayList<Article> list, int position);
+    void onCardClick(int position);
 }

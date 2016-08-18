@@ -22,6 +22,7 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
     private ArticleListener mArticleListener;
     private SectionCardListener mCardListener;
 
+
     public SectionRecyclerViewAdapter(ArrayList<Article> mArticles, ArticleListener articleListener,
                                       SectionCardListener sectionCardListener) {
         this.mArticles = mArticles;
@@ -37,7 +38,7 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
     }
 
     @Override
-    public void onBindViewHolder(final SectionViewHolder holder, int position) {
+    public void onBindViewHolder(final SectionViewHolder holder, final int position) {
 
         holder.setBookmark(Boolean.valueOf(mArticles.get(position).isBookmark()));
 
@@ -45,7 +46,7 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
         holder.setCardOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mCardListener.onCardClick(mArticles.get(holder.getAdapterPosition()), );
+                mCardListener.onCardClick(position);
             }
         });
 

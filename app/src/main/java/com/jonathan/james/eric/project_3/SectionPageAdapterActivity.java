@@ -15,20 +15,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 
 
-import com.jonathan.james.eric.project_3.interfaces.APIFetcher;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
 import com.jonathan.james.eric.project_3.presenters.SectionsPagerAdapter;
 
 import java.util.ArrayList;
 
-public class SectionPageAdapterActivity extends AppCompatActivity implements APIFetcher,
+public class SectionPageAdapterActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, ArticleListener, SectionCardListener {
 
     public static final String ARTICLE_DETAIL_INDEX_EXTRA = "article_detail_index_extra";
+    public static final String FROM_SECTION = "from_section";
+    public static final String FROM_QUERY = "from_query";
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -51,6 +51,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
 
         mAPIServices = new APIServices(); //instantiates an API Service
+        SectionHolderSingleton.getInstance().setAPIService(mAPIServices);
 
         /* IGNORE THIS, DEBUG STUFF
         apiservice.articleSearch("harambe", apiservice.retrofitInit(this));
@@ -92,7 +93,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
         mSectionNames.add("politics");
         mSectionNames.add("world");
 
-        mSectionsPagerAdapter = new SectionsPagerAdapter(mManager, mSectionNames, this, this, this);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(mManager, mSectionNames, this, this);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         mTabLayout.setupWithViewPager(mViewPager);
@@ -159,21 +160,10 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     }
 
     @Override
-    public void onCardClick(ArrayList<Article> list, int position) {
+    public void onCardClick(int position) {
         Intent articleDetailIntent = new Intent(this, ArticleDetailActivity.class);
         articleDetailIntent.putExtra(ARTICLE_DETAIL_INDEX_EXTRA, position);
         startActivity(articleDetailIntent);
     }
 
-
-    //Methods for getting API calls in the ViewPager
-    @Override
-    public ArrayList<Article> getTopNewsArticles(String sectionName) {
-        return mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this));
-    }
-
-    @Override
-    public ArrayList<Article> getSearchArticles(String query) {
-        return mAPIServices.articleSearch(query, mAPIServices.retrofitInit(this));
-    }
 }

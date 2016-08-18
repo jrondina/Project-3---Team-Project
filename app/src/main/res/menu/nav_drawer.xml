@@ -3,27 +3,32 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/top_news_section"
             android:title="Top News"/>
         <item
+            android:id="@+id/world_section"
             android:title="World"/>
         <item
+            android:id="@+id/technology_section"
             android:title="Technology"/>
         <item
+            android:id="@+id/business_section"
             android:title="Business"/>
         <item
+            android:id="@+id/politics_section"
             android:title="Politics"/>
         <item
+            android:id="@+id/science_section"
             android:title="Science"/>
         <item
+            android:id="@+id/sports_section"
             android:title="Sports"/>
         <item
+            android:id="@+id/entertainment_section"
             android:title="Entertainment"/>
+        <item
+            android:id="@+id/bookmarks_section"
+            android:title="Bookmarks"
     </group>
-
-    <item android:title="Communicate">
-        <menu>
-           <item android:title="comm item 1"/>
-        </menu>
-    </item>
 
 </menu>

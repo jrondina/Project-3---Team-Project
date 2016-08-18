@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 
 public class ArticleDetailActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private static final String TAG = "ArticleDetailActivity";
 
     private WebView mWebView;
 
@@ -53,10 +55,19 @@ public class ArticleDetailActivity extends AppCompatActivity
         int index = intent.getIntExtra(SectionPageAdapterActivity.ARTICLE_DETAIL_INDEX_EXTRA, -1);
         if(index < 0){
             Toast.makeText(ArticleDetailActivity.this, "Invalid Article ID", Toast.LENGTH_SHORT).show();
-        } else{
+            finish();
+        } else if(intent.getAction().equals(SectionPageAdapterActivity.FROM_SECTION)){
             //get the article from the singleton? with the index from the intent
-            mArticle = 
+            mArticle = SectionHolderSingleton.getInstance().getSectionArticle(index);
+        } else if(intent.getAction().equals(SectionPageAdapterActivity.FROM_QUERY)){
+            mArticle = SectionHolderSingleton.getInstance().getQueryArticle(index);
+        } else {
+            Log.d(TAG, "onResume: unable to find article. Invalid Action - " + intent.getAction());
+            finish();
         }
+
+        //TODO change this to process the HTML and show the article
+        mWebView.loadUrl(mArticle.getUrl());
     }
 
     @Override
@@ -84,8 +95,16 @@ public class ArticleDetailActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch(id){
+            case R.id.action_settings:
+                //TODO add intent for going to settings activity
+                break;
+            case R.id.action_share:
+                //TODO link to James's share method
+                break;
+            case R.id.action_search:
+                //TODO put in search?
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -97,6 +116,9 @@ public class ArticleDetailActivity extends AppCompatActivity
         //TODO make a copy of the SectionActivity Drawer
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        switch(id){
+            case R.id.
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
