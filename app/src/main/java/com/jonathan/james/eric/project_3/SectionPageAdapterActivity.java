@@ -1,6 +1,5 @@
 package com.jonathan.james.eric.project_3;
 
-import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
@@ -20,11 +19,12 @@ import com.facebook.FacebookSdk;
 import com.jonathan.james.eric.project_3.interfaces.APIFetcher;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
+import com.jonathan.james.eric.project_3.interfaces.SwipeListener;
 import com.jonathan.james.eric.project_3.presenters.SectionsPagerAdapter;
 
 import java.util.ArrayList;
 
-public class SectionPageAdapterActivity extends AppCompatActivity implements APIFetcher,
+public class SectionPageAdapterActivity extends AppCompatActivity implements APIFetcher, SwipeListener,
         NavigationView.OnNavigationItemSelectedListener, ArticleListener, SectionCardListener {
 
 
@@ -154,6 +154,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
     }
 
+    //Open the article detail view
     @Override
     public void onCardClick(int position) {
         mManager.beginTransaction().addToBackStack("Sections").add(R.id.section_fragment_container,
@@ -161,9 +162,15 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
         //TODO
     }
 
+    //get the article list for the current section
     @Override
     public ArrayList<Article> getArticles(String sectionName) {
         mCurrentSection = new ArrayList(mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this)));
         return mCurrentSection;
+    }
+
+    @Override
+    public Article onSwipe(int direction) {
+        return null;
     }
 }

@@ -54,4 +54,6 @@ public class ArticleDetailFragment extends Fragment {
         mArticle = a;
         mWebView.loadUrl(mArticle.getUrl());
     }
+
+
 }
