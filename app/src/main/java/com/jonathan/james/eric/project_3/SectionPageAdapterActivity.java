@@ -109,7 +109,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
     }
 
-    //
+    //TODO remove once method in Realm Utility done
     private void initUserPrefs() {
         UserPreferences userPreferences = new UserPreferences();
         RealmList<Section> sections = new RealmList<>();
@@ -240,7 +240,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     @Override
     public ArrayList<Article> getArticles(String sectionName) {
         mCurrentSection = new ArrayList(mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this)));
-        Log.d(TAG, "getArticles: returning an article list");
+        Log.d(TAG, "getArticles: returning an article list - " + mCurrentSection.size());
 
         //test code
 //        mCurrentSection = new ArrayList<Article>();
