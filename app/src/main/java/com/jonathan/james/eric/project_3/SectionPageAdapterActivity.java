@@ -216,11 +216,13 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
                 sectionName = "movies";
                 break;
             case R.id.bookmarks_section:
+                Log.d(TAG, "onNavigationItemSelected: starting the bookmark specific fragment");
                 mManager.beginTransaction().add(R.id.section_fragment_container,
                         SectionFragment.getInstance(new RealmUtility().getBookmarkedArticles(), this, this))
                     .commit();
         }
         if(sectionName != null) {
+            Log.d(TAG, "onNavigationItemSelected: starting the fragment for section " + sectionName);
             mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this.getApplicationContext()),
                     this);
         }

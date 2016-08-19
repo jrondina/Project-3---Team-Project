@@ -3,6 +3,7 @@ package com.jonathan.james.eric.project_3.presenters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 
 
 import com.jonathan.james.eric.project_3.Article;
@@ -25,6 +26,7 @@ import io.realm.RealmResults;
  * Created by Jonathan Taylor on 8/15/16.
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter implements RealmChangeListener {
+    private static final String TAG = "SectionsPagerAdapter";
 
     //ToDo change to UserPreferences Object and use the Section object list
     private RealmList<Section> mSectionNames;
@@ -52,7 +54,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter implements RealmC
         //ToDo change to use Section object + pull article list from the API
 
         ArrayList<Article> articles;
-        if(mSectionNames.get(position).equals("bookmarks")){
+        if(mSectionNames.get(position).getKey().equals("bookmarks")){
+            Log.d(TAG, "getItem: starting specific bookmark fragment");
             RealmUtility realmUtility = new RealmUtility();
             RealmResults<Article> realmArticles = realmUtility.getBookmarkedArticles();
             realmArticles.addChangeListener(this);
