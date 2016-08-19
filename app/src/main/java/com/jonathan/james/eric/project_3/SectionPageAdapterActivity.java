@@ -136,7 +136,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
         Log.d(TAG, "onResume: Creating the manager and Fragments");
         mManager.beginTransaction().add(R.id.main_content_container, SectionViewPagerFragment.getInstance(mManager,
-                this, this, this, this)).commit();
+                this, this, this, this), "ViewPager").commit();
     }
 
     @Override
@@ -186,9 +186,29 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
         //ToDo add one for each Section -- Also be sure to check if the source is active or not and spawn the fragment accordingly
         switch(id){
-
+            case R.id.top_news_section:
+//                ((SectionViewPagerFragment)mManager.getFragment(null, "ViewPager")).setTab(
+//                        new UserPreferences().getSectionList().
+//                );
+                //TODO initiate a callback for the article
+                break;
+            case R.id.world_section:
+                break;
+            case R.id.technology_section:
+                break;
+            case R.id.business_section:
+                break;
+            case R.id.politics_section:
+                break;
+            case R.id.science_section:
+                break;
+            case R.id.sports_section:
+                break;
+            case R.id.entertainment_section:
+                break;
+            case R.id.bookmarks_section:
+                break;
         }
-
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -224,7 +244,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     public void onCardClick(int position) {
         Log.d(TAG, "onCardClick: opening article detail");
         mManager.beginTransaction().addToBackStack("Sections").add(R.id.section_fragment_container,
-                ArticleDetailFragment.getInstance(this, this, this, mCurrentSection.get(position))).commit();
+                ArticleDetailFragment.getInstance(this, this, this, ArticleListSingleton.getInstance().getSectionArticles().get(position))).commit();
 
     }
 

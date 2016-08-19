@@ -124,6 +124,7 @@ public class APIServices {
                 }
 
                 callback.responseFinished(formattedList);
+                ArticleListSingleton.getInstance().setQueryResults(formattedList);
             }
 
             @Override
@@ -185,6 +186,7 @@ public class APIServices {
 
                 }
                 callback.responseFinished(formattedList);
+                ArticleListSingleton.getInstance().setSectionArticles(formattedList);
             }
 
             @Override

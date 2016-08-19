@@ -77,6 +77,10 @@ public class SectionFragment extends Fragment implements APICallback{
     @Override
     public void onResume() {
         super.onResume();
+        if(mArticles == null){
+            mArticles = ArticleListSingleton.getInstance().getSectionArticles();
+            mAdapter.changeArticleList(mArticles);
+        }
 
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
