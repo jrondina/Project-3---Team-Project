@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -67,7 +68,7 @@ public class ArticleDetailFragment extends Fragment {
         mWebView.setWebViewClient(new WebViewClient() {
             //TODO: add error catching here with "onReceivedError"
                                   });
-
+        Log.d("WebView", mArticle.getUrl());
         mWebView.loadUrl(mArticle.getUrl());
     }
 
