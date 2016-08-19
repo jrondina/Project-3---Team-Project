@@ -89,6 +89,12 @@ public class SectionViewHolder extends RecyclerView.ViewHolder {
         Log.d("DEBUG", "setThumbnail: " + thumbnailURL);
     }
 
+    public void hideThumbnail() {
+
+        mThumbnail.setVisibility(View.INVISIBLE);
+
+    }
+
     public void setSectionText(String s){
         mSection.setText(s);
     }
