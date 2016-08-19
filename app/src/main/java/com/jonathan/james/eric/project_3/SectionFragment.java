@@ -1,5 +1,6 @@
 package com.jonathan.james.eric.project_3;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -33,6 +34,8 @@ public class SectionFragment extends Fragment implements APICallback{
     private SectionCardListener mCardViewListener;
     private ArticleListener mArticleListener;
 
+    private Context context;
+
     public static SectionFragment getInstance(List<Article> articles,
                                               SectionCardListener sectionCardListener, ArticleListener articleListener){
         SectionFragment fragment = new SectionFragment();
@@ -60,8 +63,10 @@ public class SectionFragment extends Fragment implements APICallback{
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG, "onViewCreated: setting recycler view");
 
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
+        context = view.getContext();
+
+//        mRecyclerView.setAdapter(mAdapter);
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
     }
 
     public void changeArticleList(ArrayList<Article> articles){
@@ -76,6 +81,9 @@ public class SectionFragment extends Fragment implements APICallback{
             mArticles = ArticleListSingleton.getInstance().getSectionArticles();
             mAdapter.changeArticleList(mArticles);
         }
+
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
 
     }
 
