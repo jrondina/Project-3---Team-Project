@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="5dp"
     app:cardElevation="4dp"
     android:layout_margin="5dp"
     app:cardCornerRadius="5dp">
@@ -20,7 +21,7 @@
         <ImageView
             android:id="@+id/section_card_thumbnail"
             android:layout_width="match_parent"
-            android:layout_height="260dp"
+            android:layout_height="wrap_content"
             android:src="@drawable/glamping1_superjumbo"/>
         <TextView
             android:id="@+id/section_card_byline"
