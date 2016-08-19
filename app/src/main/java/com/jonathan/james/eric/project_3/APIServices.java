@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.jonathan.james.eric.project_3.interfaces.APICallback;
 import com.jonathan.james.eric.project_3.models.ArticleSearch.ArticleSearchList;
 import com.jonathan.james.eric.project_3.models.ArticleSearch.Doc;
 import com.jonathan.james.eric.project_3.models.ArticleSearch.Multimedium;
@@ -73,11 +74,11 @@ public class APIServices {
         return retrofit;
     }
 
-    public List<Article> articleSearch(String query, Retrofit retrofit) {
+    public List<Article> articleSearch(String query, Retrofit retrofit, final APICallback callback) {
 
         Log.i(TAG, "articleSearch: Starting search for: " + query);
 
-        final List formattedList = new ArrayList();
+        final List<Article> formattedList = new ArrayList();
 
         options = new HashMap<>();
         options.put("q",query);
@@ -112,16 +113,18 @@ public class APIServices {
                     newArticle.setLeadParagraph(article.getAbstract());
                     newArticle.setSection(article.getSectionName());
                     newArticle.setUrl(article.getWebUrl());
-                    /*TODO: set byline
                     try{
                     newArticle.setByline(article.getByline().getOriginal());
                     }
                     catch (NullPointerException e) {
                     Log.e(TAG, "No byline" );
-                    }*/
+                    }
 
                     formattedList.add(newArticle);
                 }
+
+                callback.responseFinished(formattedList);
+                ArticleListSingleton.getInstance().setQueryResults(formattedList);
             }
 
             @Override
@@ -134,10 +137,9 @@ public class APIServices {
         return formattedList;
     }
 
-    public List<Article> topNews(String section, Retrofit retrofit) {
+    public List<Article> topNews(String section, Retrofit retrofit, final APICallback callback) {
 
-        final List formattedList = new ArrayList();
-
+        final List<Article> formattedList = new ArrayList();
 
         //create instance of TopNewsNYT and get Call
 
@@ -160,9 +162,9 @@ public class APIServices {
 
                     if (article.getMultimedia().size() != 0) {
                         newMultimedia.setCaption(article.getMultimedia().get(0).getCaption());
-                        newMultimedia.setThumbnailImage("ThumbURL: " +
+                        newMultimedia.setThumbnailImage(
                                 article.getMultimedia().get(IMG_TOP_THUMB).getUrl());
-                        newMultimedia.setRegularImage("LargeURL: " +
+                        newMultimedia.setRegularImage(
                                 article.getMultimedia().get(IMG_TOP_LARGE).getUrl());
                     }
 
@@ -173,10 +175,18 @@ public class APIServices {
                     newArticle.setLeadParagraph(article.getAbstract());
                     newArticle.setSection(article.getSection());
                     newArticle.setUrl(article.getUrl());
+                    try{
+                        newArticle.setByline(article.getByline());
+                    }
+                    catch (NullPointerException e) {
+                        Log.e(TAG, "No byline" );
+                    }
 
                     formattedList.add(newArticle);
 
                 }
+                callback.responseFinished(formattedList);
+                ArticleListSingleton.getInstance().setSectionArticles(formattedList);
             }
 
             @Override
@@ -184,9 +194,9 @@ public class APIServices {
 
                 Log.e(TAG, "onFailure: Could not establish Connection", t);
 
-
             }
         });
+
         return formattedList;
     }
 

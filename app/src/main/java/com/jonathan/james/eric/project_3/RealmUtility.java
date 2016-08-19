@@ -3,8 +3,11 @@ package com.jonathan.james.eric.project_3;
 import android.support.annotation.UiThread;
 import android.util.Log;
 
+import com.jonathan.james.eric.project_3.models.BookmarkHashtable;
+
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.HashMap;
 
 import io.realm.Realm;
 import io.realm.RealmAsyncTask;
@@ -66,17 +69,18 @@ public class RealmUtility implements Closeable{
 
     }
 
-    public void deleteArticle(final Article a){
-
+    public void deleteArticle(Article a){
+        final String articleUrl = a.getUrl();
+        final String regularImageUrl = a.getLeadImage().getRegularImage();
         final RealmAsyncTask realmAsyncTask = realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm bgRealm) {
                 RealmResults<Article> results = bgRealm.where(Article.class)
-                        .contains("url",a.getUrl()).findAll();
+                        .contains("url",articleUrl).findAll();
                 Log.d(TAG, "execute: realm results contains " + results.size());
                 results.deleteAllFromRealm();
                 RealmResults<Multimedia> multimediaresults = bgRealm.where(Multimedia.class)
-                        .equalTo("regularImage",a.getLeadImage().getRegularImage()).findAll();
+                        .equalTo("regularImage",regularImageUrl).findAll();
                 Log.d(TAG,"multimedia object contains "+ results.size());
                 multimediaresults.deleteAllFromRealm();
             }
@@ -98,8 +102,23 @@ public class RealmUtility implements Closeable{
 
     }
 
+    public BookmarkHashtable initBookmarkHashtable(){
+        RealmResults<Article> realmResults = getBookmarkedArticles();
+        HashMap<String,Boolean> bookmarkHashtable = new HashMap<String, Boolean>();
+        for (int i = 0; i < realmResults.size(); i++) {
+            Article article = realmResults.get(i);
+            bookmarkHashtable.put(article.getUrl(),article.isBookmark());
+        }
+        BookmarkHashtable ourInstance = BookmarkHashtable.getInstance();
+        ourInstance.setUrlHashmap(bookmarkHashtable);
+        return ourInstance;
+    }
+
     public UserPreferences getUserPreferences(){
-        UserPreferences preferences = realm.where(UserPreferences.class).findAll().first();
+        UserPreferences preferences = null;
+        RealmResults<UserPreferences> userPreferences = realm.where(UserPreferences.class).findAll();
+                if(userPreferences.size() > 0){
+                return userPreferences.first();}
         return preferences;
     }
 
@@ -112,42 +131,53 @@ public class RealmUtility implements Closeable{
 
     public void insertUserPreferences(final UserPreferences i){
 
-        RealmAsyncTask realmAsyncTask = realm.executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm bgRealm) {
-                bgRealm.insert(i);
-            }
-
-
-        }, new Realm.Transaction.OnError() {
-            @Override
-            public void onError(Throwable error) {
-                Log.e(TAG,"Error Writing User Preferences Realm Object to DB",error);
-
-            }
-        });
+//        RealmAsyncTask realmAsyncTask = realm.executeTransactionAsync(new Realm.Transaction() {
+//            @Override
+//            public void execute(Realm bgRealm) {
+//                bgRealm.insert(i);
+//            }
+//
+//
+//        }, new Realm.Transaction.OnError() {
+//            @Override
+//            public void onError(Throwable error) {
+//                Log.e(TAG,"Error Writing User Preferences Realm Object to DB",error);
+//
+//            }
+//        });
+        realm.beginTransaction();
+        realm.insert(i);
+        realm.commitTransaction();
     }
 
-    public void deleteUserPreferences(final UserPreferences up){
+    public void deleteUserPreferences(UserPreferences up){
+        final String query = up.getUserName();
+//        RealmAsyncTask realmAsyncTask = realm.executeTransactionAsync(new Realm.Transaction() {
+//            @Override
+//            public void execute(Realm bgRealm) {
+//                RealmResults<UserPreferences> results = bgRealm.where(UserPreferences.class)
+//                        .contains("userName",query)
+//                        .findAll();
+//                Log.d(TAG, "execute: realm results contains " + results.size());
+//                results.deleteAllFromRealm();
+//            }
+//
+//
+//        }, new Realm.Transaction.OnError() {
+//            @Override
+//            public void onError(Throwable error) {
+//                Log.e(TAG,"Error Deleting User Preferences Realm Object from DB",error);
+//
+//            }
+//        });
 
-        RealmAsyncTask realmAsyncTask = realm.executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm bgRealm) {
-                RealmResults<UserPreferences> results = bgRealm.where(UserPreferences.class)
-                        .contains("userName",up.getUserName())
+        RealmResults<UserPreferences> results = realm.where(UserPreferences.class)
+                        .contains("userName",query)
                         .findAll();
                 Log.d(TAG, "execute: realm results contains " + results.size());
-                results.deleteAllFromRealm();
-            }
-
-
-        }, new Realm.Transaction.OnError() {
-            @Override
-            public void onError(Throwable error) {
-                Log.e(TAG,"Error Deleting User Preferences Realm Object from DB",error);
-
-            }
-        });
+        realm.beginTransaction();
+        results.deleteAllFromRealm();
+        realm.commitTransaction();
 
     }
 
@@ -279,11 +309,99 @@ public class RealmUtility implements Closeable{
     }
     */
 
+    public void initUserPrefs(){
+        UserPreferences userPreferences = new UserPreferences();
+        RealmList<Section> sections = new RealmList<>();
+        Section home = new Section();
+        home.setActive(true);
+        home.setKey("home");
+        home.setSectionName("Top News");
+        sections.add(home);
+
+        Section world = new Section();
+        world.setActive(true);
+        world.setKey("world");
+        world.setSectionName("World");
+        sections.add(world);
+
+        Section tech = new Section();
+        tech.setActive(true);
+        tech.setKey("technology");
+        tech.setSectionName("Tech");
+        sections.add(tech);
+
+        Section business = new Section();
+        business.setActive(true);
+        business.setKey("business");
+        business.setSectionName("Business");
+        sections.add(business);
+
+        Section politics = new Section();
+        politics.setActive(true);
+        politics.setKey("politics");
+        politics.setSectionName("Politics");
+        sections.add(politics);
+
+        Section science = new Section();
+        science.setActive(true);
+        science.setKey("science");
+        science.setSectionName("Science");
+        sections.add(science);
+
+        Section sports = new Section();
+        sports.setActive(true);
+        sports.setKey("sports");
+        sports.setSectionName("Sports");
+        sections.add(sports);
+
+        Section movies = new Section();
+        movies.setActive(true);
+        movies.setKey("movies");
+        movies.setSectionName("Movies");
+        sections.add(movies);
+
+        Section bookmarks = new Section();
+        bookmarks.setActive(true);
+        bookmarks.setKey("bookmarks");
+        bookmarks.setSectionName("Bookmarks");
+        sections.add(bookmarks);
+
+        RealmList<Source> sources = new RealmList<>();
+        Source nytimes = new Source();
+        nytimes.setName("New York Times");
+        nytimes.setActive(true);
+        sources.add(nytimes);
+
+        userPreferences.setSectionList(sections);
+        userPreferences.setSourceList(sources);
+        userPreferences.setUserName("default");
+
+        insertUserPreferences(userPreferences);
+
+
+    }
+
 
 
     @Override
     public void close() throws IOException {
         realm.close();
+    }
+
+    //method to toggle whether an article is bookmarked or not (i.e. add or remove it from the database)
+    public boolean toggleBookmark(Article a){
+        boolean bookmarked;
+        realm.beginTransaction();
+        a.setBookmark(!a.isBookmark());
+        if(a.isBookmark()) {
+            insertArticle(a);
+            bookmarked = true;
+        } else{
+            deleteArticle(a);
+            bookmarked = false;
+        }
+        realm.commitTransaction();
+        return bookmarked;
     }
 
 

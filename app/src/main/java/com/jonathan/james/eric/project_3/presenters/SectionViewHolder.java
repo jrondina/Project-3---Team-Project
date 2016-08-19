@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.support.v4.graphics.BitmapCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -85,6 +86,12 @@ public class SectionViewHolder extends RecyclerView.ViewHolder {
 
     public void setThumbnail(String thumbnailURL) {
         Picasso.with(mThumbnail.getContext()).load(thumbnailURL).into(mThumbnail);
+    }
+
+    public void hideThumbnail() {
+
+        mThumbnail.setVisibility(View.GONE);
+
     }
 
     public void setSectionText(String s){

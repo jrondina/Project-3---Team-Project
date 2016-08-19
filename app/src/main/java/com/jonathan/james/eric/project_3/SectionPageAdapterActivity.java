@@ -4,7 +4,6 @@ import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
@@ -15,37 +14,31 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
-import com.facebook.CallbackManager;
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.ShareDialog;
-import com.github.scribejava.apis.TwitterApi;
-import com.github.scribejava.core.builder.ServiceBuilder;
-import com.github.scribejava.core.model.OAuth1AccessToken;
-import com.github.scribejava.core.model.OAuth1RequestToken;
-import com.github.scribejava.core.model.OAuthRequest;
-import com.github.scribejava.core.model.Response;
-import com.github.scribejava.core.model.Verb;
-import com.github.scribejava.core.oauth.OAuth10aService;
+import com.jonathan.james.eric.project_3.interfaces.APICallback;
+import com.jonathan.james.eric.project_3.interfaces.APIFetcher;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
+import com.jonathan.james.eric.project_3.interfaces.SwipeListener;
+import com.jonathan.james.eric.project_3.interfaces.ToolbarLoadedCallback;
+import com.jonathan.james.eric.project_3.models.BookmarkHashtable;
 import com.jonathan.james.eric.project_3.presenters.SectionsPagerAdapter;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.auth.AccessToken;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmList;
 
-public class SectionPageAdapterActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener, ArticleListener, SectionCardListener {
+public class SectionPageAdapterActivity extends AppCompatActivity implements APIFetcher, SwipeListener,
+        NavigationView.OnNavigationItemSelectedListener, ArticleListener, SectionCardListener, ToolbarLoadedCallback, APICallback {
+
+    private static final String TAG = "MainActivity";
+
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -56,35 +49,25 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
 
     long NOTIFICATION_INTERVAL = 10_800_000; //3 hours in milliseconds
 
-    /* for facebook sharing, not in use
-    CallbackManager callbackManager;
-    ShareDialog shareDialog;
-    */
-
-    /*Twiter OAuth stuff no longer in use since we're doing intent for sharing
-    String CONSUMER_KEY_TW = "6FCKnOeCVFehIiunrWnL6itSO";
-    String CONSUMER_SECRET_TW = " c7kGW8TLiHywj367U1b8ScCSE1g86NZp2H1A3FHasfXrXlNf5u";
-    String ACCESS_TOKEN_TW = "";
-    String ACCESS_SECRET_TW = "";
-    */
+    private APIServices mAPIServices;
+    private ArrayList<Article> mCurrentSection;
+    private ArrayList<Article> mCurrentQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_section_page_adapter);
 
-        /*FacebookSdk.sdkInitialize(getApplicationContext());
-        callbackManager = CallbackManager.Factory.create();
-        shareDialog = new ShareDialog(this);
-        //AppEventsLogger.activateApp(this); */ //used for facebook but don't need it
-
         //JobScheduler for jobs
         JobScheduler jobScheduler =
                 (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         jobScheduler.schedule(noteScheduler()); //schedules notifications at intervals
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+
+
+        mAPIServices = new APIServices(); //instantiates an API Service
+        Log.d(TAG, "onCreate: getting API services");
 
         mViewPager = (ViewPager) findViewById(R.id.section_fragment_container);
         mTabLayout = (TabLayout) findViewById(R.id.section_tabs);
@@ -92,34 +75,74 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
         //Set up the Fragment Manager
         mManager = getSupportFragmentManager();
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        //init Realm Default Instance
+        RealmConfiguration config = new RealmConfiguration.Builder(this.getApplicationContext()).build();
+        Realm.setDefaultConfiguration(config);
 
 
+
+        //initialize the UserPreferences object
+        RealmUtility realmUtility = new RealmUtility();
+        if(realmUtility.getUserPreferences() == null) {
+            realmUtility.initUserPrefs();
+        } else{
+            realmUtility.deleteUserPreferences(realmUtility.getUserPreferences());
+            realmUtility.initUserPrefs();
+        }
+        //Initialize the bookmark hashtable
+        realmUtility.initBookmarkHashtable();
+
+    }
+
+    //TODO remove once method in Realm Utility done
+    private void initUserPrefs() {
+        UserPreferences userPreferences = new UserPreferences();
+        RealmList<Section> sections = new RealmList<>();
+        Section home = new Section();
+        home.setActive(true);
+        home.setKey("home");
+        home.setSectionName("Home");
+        sections.add(home);
+
+        Section world = new Section();
+        world.setActive(true);
+        world.setKey("world");
+        world.setSectionName("World");
+        sections.add(world);
+
+        Section technology = new Section();
+        technology.setActive(true);
+        technology.setKey("technology");
+        technology.setSectionName("Technology");
+        sections.add(technology);
+
+        Section business = new Section();
+        business.setActive(true);
+        business.setKey("business");
+        business.setSectionName("Business");
+        sections.add(world);
+
+        RealmList<Source> sources = new RealmList<>();
+        Source s = new Source();
+        s.setName("New York Times");
+        s.setActive(true);
+        sources.add(s);
+
+        userPreferences.setSectionList(sections);
+        userPreferences.setSourceList(sources);
+        userPreferences.setUserName("default");
+
+        new RealmUtility().insertUserPreferences(userPreferences);
+        Log.d(TAG, "initUserPrefs: saving user preferences to the database" );
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        //TestCode
-        ArrayList<String> mSectionNames = new ArrayList<>();
-        mSectionNames.add("top news");
-        mSectionNames.add("technology");
-        mSectionNames.add("science");
-        mSectionNames.add("politics");
-        mSectionNames.add("world");
-
-        mSectionsPagerAdapter = new SectionsPagerAdapter(mManager, mSectionNames, this, this);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        mTabLayout.setupWithViewPager(mViewPager);
+        Log.d(TAG, "onResume: Creating the manager and Fragments");
+        mManager.beginTransaction().replace(R.id.main_content_container, SectionViewPagerFragment.getInstance(mManager,
+                this, this, this, this), "ViewPager").commit();
     }
 
     @Override
@@ -135,7 +158,6 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.section_page_adapter, menu);
         return true;
     }
 
@@ -148,7 +170,15 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            //TODO finish intent to go to Settings page
+            Intent settingsIntent = new Intent();
             return true;
+        }
+        if (id == R.id.action_search){
+
+        }
+        if (id == R.id.action_share){
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -159,13 +189,47 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        //ToDo add one for each Section -- Also be sure to check if the source is active or not and spawn the fragment accordingly
+        String sectionName = null;
+        //ToDo swap out the hard coded values, but need a way to find the section object by name...
         switch(id){
-
+            case R.id.top_news_section:
+//                ((SectionViewPagerFragment)mManager.getFragment(null, "ViewPager")).setTab(
+//                        new UserPreferences().getSectionList().
+//                );
+                sectionName = "home";
+                break;
+            case R.id.world_section:
+                sectionName = "world";
+                break;
+            case R.id.technology_section:
+                sectionName = "technology";
+                break;
+            case R.id.business_section:
+                sectionName = "business";
+                break;
+            case R.id.politics_section:
+                sectionName = "politics";
+                break;
+            case R.id.science_section:
+                sectionName = "science";
+                break;
+            case R.id.sports_section:
+                sectionName = "sports";
+                break;
+            case R.id.entertainment_section:
+                sectionName = "movies";
+                break;
+            case R.id.bookmarks_section:
+                Log.d(TAG, "onNavigationItemSelected: starting the bookmark specific fragment");
+                mManager.beginTransaction().replace(R.id.section_fragment_container,
+                        SectionFragment.getInstance(new RealmUtility().getBookmarkedArticles(), 1, this, this))
+                    .commit();
         }
-
-
+        if(sectionName != null) {
+            Log.d(TAG, "onNavigationItemSelected: starting the fragment for section " + sectionName);
+            mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this.getApplicationContext()),
+                    this);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -174,7 +238,9 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
 
     @Override
     public void onBookMarkClick(Article a) {
-
+        RealmUtility realmUtility = new RealmUtility();
+        //toggle the boolean for is bookmarked
+        realmUtility.toggleBookmark(a);
     }
 
     @Override
@@ -188,15 +254,16 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
 
     }
 
+    //Open the article detail view
     @Override
-    public void onCardClick(Article a) {
-
-        //ToDo add code for setting up Fragment Pager Adapter
+    public void onCardClick(int position) {
+        Log.d(TAG, "onCardClick: opening article detail");
+        mManager.beginTransaction().addToBackStack("Sections").replace(R.id.section_fragment_container,
+                ArticleDetailFragment.getInstance(this, this, this, ArticleListSingleton.getInstance().getSectionArticles().get(position))).commit();
 
     }
 
     private void shareLink(String url) {
-
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, url);
@@ -213,69 +280,47 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements
 
         return job;
     }
+    //get the article list for the current section
+    @Override
+    public void getArticles(String sectionName, APICallback callback) {
+        mCurrentSection = new ArrayList(mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this), callback));
 
-    //Share to twitter and FB stuff not in use because we're just sharing via intent
-    /*
-
-    private void fbShare(String url) {
-
-        if (ShareDialog.canShow(ShareLinkContent.class)) {
-            ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                    //.setContentTitle("Hello Facebook")
-                    //.setContentDescription(
-                    //        "The 'Hello Facebook' sample  showcases simple Facebook integration")
-                    .setContentUrl(Uri.parse(url))
-                    .build();
-
-            shareDialog.show(linkContent);
-        }
-
+        //test code
+//        mCurrentSection = new ArrayList<Article>();
+//        Article a = new Article();
+//        a.setHeadline("Test Headline");
+//        a.setByline("By Test Author");
+//        a.setSection("world");
+//        a.setUrl("http://www.nytimes.com/2016/08/13/sports/olympics/a-closer-look-at-simone-manuel-olympic-medalist-history-maker.html");
+//        Multimedia m = new Multimedia();
+//        m.setThumbnailImage("https://static01.nyt.com/images/2016/08/17/magazine/17mag-cholera-1/17mag-cholera-1-thumbLarge.jpg");
+//        m.setRegularImage("https://static01.nyt.com/images/2016/08/17/magazine/17mag-cholera-1/17mag-cholera-1-superJumbo.jpg");
+//        m.setCaption("Test Image");
+//        a.setLeadimage(m);
+//        mCurrentSection.add(a);
+//        mCurrentSection.add(a);
     }
 
-    private void sendTweet(String url) {
-
-        try {
-            Twitter twitter = new TwitterFactory().getInstance();
-
-            twitter.setOAuthConsumer(CONSUMER_KEY_TW, CONSUMER_SECRET_TW);
-
-            AccessToken accessToken = new AccessToken(ACCESS_TOKEN_TW, ACCESS_SECRET_TW);
-            twitter.setOAuthAccessToken(accessToken);
-
-            twitter.updateStatus(url);
-
-        } catch (TwitterException te) {
-            te.printStackTrace();
-        }
+    @Override
+    public Article onSwipe(int direction) {
+        return null;
     }
 
-    private void loginTwitter() throws IOException {
+    @Override
+    public void ToolbarLoaded(Toolbar toolbar) {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
 
-        final OAuth10aService service = new ServiceBuilder()
-                .apiKey(CONSUMER_KEY_TW)
-                .apiSecret(CONSUMER_SECRET_TW)
-                .build(TwitterApi.instance());
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
 
-        final OAuth1RequestToken requestToken = service.getRequestToken();
-
-        String authUrl = service.getAuthorizationUrl(requestToken);
-
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, authUrl);
-        startActivity(intent);
-
-        String OAuthVerifier = "";
-
-        final OAuth1AccessToken accessToken = service.getAccessToken(
-                requestToken, OAuthVerifier);
-
-        final OAuthRequest request = new OAuthRequest(Verb.GET,
-                "https://api.twitter.com/1.1/account/verify_credentials.json", service);
-        service.signRequest(accessToken, request); // the access token from step 4
-        final Response response = request.send();
-        System.out.println(response.getBody());
-
-
-    }*/
+    @Override
+    public void responseFinished(List<Article> responseList) {
+        mManager.beginTransaction().replace(R.id.section_fragment_container, SectionFragment.getInstance(
+                responseList, 1, this, this)).commit();
+    }
 }
