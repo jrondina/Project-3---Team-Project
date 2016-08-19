@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +26,8 @@ import java.util.ArrayList;
  * Created by Jonathan Taylor on 8/18/16.
  */
 public class SectionViewPagerFragment extends Fragment {
+
+    private static final String TAG = "ViewPagerFragment";
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -56,6 +59,7 @@ public class SectionViewPagerFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        setRetainInstance(true);
     }
 
     @Nullable
@@ -69,6 +73,8 @@ public class SectionViewPagerFragment extends Fragment {
 
         // Get a reference to the TabLayout
         tabLayout = (TabLayout) rootView.findViewById(R.id.section_tabs);
+
+        setRetainInstance(true);
 
         return rootView;
 
@@ -90,13 +96,21 @@ public class SectionViewPagerFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.section_page_adapter, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+    public void onResume() {
+        super.onResume();
+        mViewPager.setAdapter(null);
+        Log.d(TAG, "onResume: toggling the view pager");
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.getAdapter().notifyDataSetChanged();
     }
 
-    public void setTab(int index){
-        mViewPager.setCurrentItem(index);
+    //    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//
+//    }
+
+    public void setTab(String sectionName){
+//        mViewPager.getAdapter().
     }
 
 }
