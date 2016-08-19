@@ -14,6 +14,12 @@
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_share_black_24dp"/>
     <item
+        android:id="@+id/action_bookmark"
+        android:orderInCategory="110"
+        android:title="@string/bookmark"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_bookmark_border_black_24dp"/>
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"

@@ -1,6 +1,7 @@
 package com.jonathan.james.eric.project_3.presenters;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import com.jonathan.james.eric.project_3.Article;
 import com.jonathan.james.eric.project_3.R;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
+import com.jonathan.james.eric.project_3.interfaces.BookmarkChangeListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
 import com.jonathan.james.eric.project_3.models.BookmarkHashtable;
 
@@ -19,10 +21,13 @@ import java.util.List;
  */
 public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionViewHolder> {
 
+    private static final String TAG = "RecyclerViewAdapter";
+
     private List<Article> mArticles;
 
     private ArticleListener mArticleListener;
     private SectionCardListener mCardListener;
+    private BookmarkChangeListener mBookmarkChangeListener;
 
     private int mType;
 
@@ -31,11 +36,13 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
 
 
     public SectionRecyclerViewAdapter(List<Article> mArticles, ArticleListener articleListener,
-                                      SectionCardListener sectionCardListener, int type) {
+                                      SectionCardListener sectionCardListener,
+                                      BookmarkChangeListener bookmarkChangeListener, int type) {
         this.mArticles = mArticles;
         mArticleListener = articleListener;
         mCardListener = sectionCardListener;
         mBookmarkHashtable = BookmarkHashtable.getInstance();
+        mBookmarkChangeListener = bookmarkChangeListener;
         mType = type;
     }
 
@@ -49,6 +56,7 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
     public void onBindViewHolder(final SectionViewHolder holder, final int position) {
         if(mBookmarkHashtable.isBookmarked(mArticles.get(position).getUrl()) && mType == 0){
             mArticles.get(position).setBookmark(true);
+            Log.d(TAG, "onBindViewHolder: article is " + mArticles.get(position).isBookmark());
         }
         holder.setBookmark(Boolean.valueOf(mArticles.get(position).isBookmark()));
 
@@ -65,7 +73,8 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
             @Override
             public void onClick(View view) {
                 holder.toggleBookmark();
-                mArticleListener.onBookMarkClick(mArticles.get(holder.getAdapterPosition()));
+                mArticleListener.onBookMarkClick(mArticles.get(holder.getAdapterPosition()), mBookmarkChangeListener);
+
             }
         });
         holder.setShareListener(new View.OnClickListener() {
@@ -96,6 +105,7 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
 
     public void changeArticleList(List<Article> articles){
         mArticles = articles;
+        Log.d(TAG, "changeArticleList: Reloading the article list. Now length " + mArticles.size());
         notifyDataSetChanged();
     }
 }
