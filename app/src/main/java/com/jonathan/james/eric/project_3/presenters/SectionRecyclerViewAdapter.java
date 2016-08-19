@@ -11,18 +11,22 @@ import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Jonathan Taylor on 8/15/16.
  */
 public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionViewHolder> {
 
-    private ArrayList<Article> mArticles;
+    private List<Article> mArticles;
 
     private ArticleListener mArticleListener;
     private SectionCardListener mCardListener;
 
-    public SectionRecyclerViewAdapter(ArrayList<Article> mArticles, ArticleListener articleListener,
+    //TODO add hashtable for checking articles
+
+
+    public SectionRecyclerViewAdapter(List<Article> mArticles, ArticleListener articleListener,
                                       SectionCardListener sectionCardListener) {
         this.mArticles = mArticles;
         mArticleListener = articleListener;
@@ -37,7 +41,7 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
     }
 
     @Override
-    public void onBindViewHolder(final SectionViewHolder holder, int position) {
+    public void onBindViewHolder(final SectionViewHolder holder, final int position) {
 
         holder.setBookmark(Boolean.valueOf(mArticles.get(position).isBookmark()));
 
@@ -45,7 +49,7 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
         holder.setCardOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mCardListener.onCardClick(mArticles.get(holder.getAdapterPosition()));
+                mCardListener.onCardClick(position);
             }
         });
 
@@ -81,5 +85,10 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
     @Override
     public int getItemCount() {
         return mArticles.size();
+    }
+
+    public void changeArticleList(ArrayList<Article> articles){
+        mArticles = articles;
+        notifyDataSetChanged();
     }
 }
