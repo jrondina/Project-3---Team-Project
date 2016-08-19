@@ -90,7 +90,7 @@ public class SectionViewHolder extends RecyclerView.ViewHolder {
 
     public void hideThumbnail() {
 
-        mThumbnail.setVisibility(View.INVISIBLE);
+        mThumbnail.setVisibility(View.GONE);
 
     }
 
