@@ -47,10 +47,6 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
     long NOTIFICATION_INTERVAL = 10_800_000; //3 hours in milliseconds
 
-    /* for facebook sharing, not in use
-    CallbackManager callbackManager;
-    ShareDialog shareDialog;
-    */
     private APIServices mAPIServices;
     private ArrayList<Article> mCurrentSection;
     private ArrayList<Article> mCurrentQuery;
@@ -59,11 +55,6 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_section_page_adapter);
-
-        /*FacebookSdk.sdkInitialize(getApplicationContext());
-        callbackManager = CallbackManager.Factory.create();
-        shareDialog = new ShareDialog(this);
-        //AppEventsLogger.activateApp(this); */ //used for facebook but don't need it
 
         //JobScheduler for jobs
         JobScheduler jobScheduler =
@@ -87,9 +78,12 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
         Realm.setDefaultConfiguration(config);
 
         //initialize the UserPreferences object
-       // if(new RealmUtility().getUserPreferences() == null) {
+        if(new RealmUtility().getUserPreferences() == null) {
             initUserPrefs();
-        //}
+        } else{
+            new RealmUtility().deleteUserPreferences(new RealmUtility().getUserPreferences());
+            initUserPrefs();
+        }
 
 
     }
@@ -104,6 +98,23 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
         home.setSectionName("Home");
         sections.add(home);
 
+        Section world = new Section();
+        world.setActive(true);
+        world.setKey("world");
+        world.setSectionName("World");
+        sections.add(world);
+
+        Section technology = new Section();
+        technology.setActive(true);
+        technology.setKey("technology");
+        technology.setSectionName("Technology");
+        sections.add(technology);
+
+        Section business = new Section();
+        business.setActive(true);
+        business.setKey("business");
+        business.setSectionName("Business");
+        sections.add(world);
 
         RealmList<Source> sources = new RealmList<>();
         Source s = new Source();
@@ -123,10 +134,9 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     protected void onResume() {
         super.onResume();
 
-
         Log.d(TAG, "onResume: Creating the manager and Fragments");
         mManager.beginTransaction().add(R.id.main_content_container, SectionViewPagerFragment.getInstance(mManager,
-                this, this, this, this)).commit();
+                this, this, this, this), "ViewPager").commit();
     }
 
     @Override
@@ -176,9 +186,29 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
         //ToDo add one for each Section -- Also be sure to check if the source is active or not and spawn the fragment accordingly
         switch(id){
-
+            case R.id.top_news_section:
+//                ((SectionViewPagerFragment)mManager.getFragment(null, "ViewPager")).setTab(
+//                        new UserPreferences().getSectionList().
+//                );
+                //TODO initiate a callback for the article
+                break;
+            case R.id.world_section:
+                break;
+            case R.id.technology_section:
+                break;
+            case R.id.business_section:
+                break;
+            case R.id.politics_section:
+                break;
+            case R.id.science_section:
+                break;
+            case R.id.sports_section:
+                break;
+            case R.id.entertainment_section:
+                break;
+            case R.id.bookmarks_section:
+                break;
         }
-
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -214,7 +244,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     public void onCardClick(int position) {
         Log.d(TAG, "onCardClick: opening article detail");
         mManager.beginTransaction().addToBackStack("Sections").add(R.id.section_fragment_container,
-                ArticleDetailFragment.getInstance(this, this, this, mCurrentSection.get(position))).commit();
+                ArticleDetailFragment.getInstance(this, this, this, ArticleListSingleton.getInstance().getSectionArticles().get(position))).commit();
 
     }
 
@@ -240,7 +270,6 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     @Override
     public void getArticles(String sectionName, APICallback callback) {
         mCurrentSection = new ArrayList(mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this), callback));
-        Log.d(TAG, "getArticles: returning an article list - " + mCurrentSection.size());
 
         //test code
 //        mCurrentSection = new ArrayList<Article>();

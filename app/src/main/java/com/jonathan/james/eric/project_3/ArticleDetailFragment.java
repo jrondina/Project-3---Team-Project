@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SwipeListener;
@@ -60,6 +61,11 @@ public class ArticleDetailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.setWebViewClient(new WebViewClient() {
+            //TODO: add error catching here with "onReceivedError"
+                                  });
 
         mWebView.loadUrl(mArticle.getUrl());
     }

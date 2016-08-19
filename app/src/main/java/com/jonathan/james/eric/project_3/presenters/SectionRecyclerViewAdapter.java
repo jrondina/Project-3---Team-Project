@@ -87,7 +87,7 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
         return mArticles.size();
     }
 
-    public void changeArticleList(ArrayList<Article> articles){
+    public void changeArticleList(List<Article> articles){
         mArticles = articles;
         notifyDataSetChanged();
     }

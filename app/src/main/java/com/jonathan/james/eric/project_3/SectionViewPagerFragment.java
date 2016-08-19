@@ -94,4 +94,9 @@ public class SectionViewPagerFragment extends Fragment {
         inflater.inflate(R.menu.section_page_adapter, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
+
+    public void setTab(int index){
+        mViewPager.setCurrentItem(index);
+    }
+
 }

@@ -86,7 +86,6 @@ public class SectionViewHolder extends RecyclerView.ViewHolder {
 
     public void setThumbnail(String thumbnailURL) {
         Picasso.with(mThumbnail.getContext()).load(thumbnailURL).into(mThumbnail);
-        Log.d("DEBUG", "setThumbnail: " + thumbnailURL);
     }
 
     public void hideThumbnail() {
