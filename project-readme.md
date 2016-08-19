@@ -1,6 +1,7 @@
 Welcome to News-Ish!
 this is a New York Times news reader app that allows the user to schedule notifications and bookmark articles for later reading.
 
+![Project Screenshot](https://github.com/jrondina/Project-3---Team-Project/blob/master/Screenshot_20160819-152850.png)
 
 The app has the following functionality:
 - User can read from the New York Times sections Top News, Business, World, Sports, Technology, Politics, Science, and Entertainment
