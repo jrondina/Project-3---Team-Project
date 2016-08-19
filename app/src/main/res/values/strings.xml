@@ -8,4 +8,5 @@
     <string name="search">Search</string>
     <string name="share">Share</string>
     <string name="title_activity_article_detail">ArticleDetailActivity</string>
+    <string name="bookmark">Bookmark</string>
 </resources>

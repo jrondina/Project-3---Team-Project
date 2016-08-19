@@ -39,6 +39,8 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
     private static final String TAG = "MainActivity";
 
+    public static final String ARTICLE_INDEX = "article_index";
+
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -258,8 +260,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     @Override
     public void onCardClick(int position) {
         Log.d(TAG, "onCardClick: opening article detail");
-        mManager.beginTransaction().addToBackStack("Sections").replace(R.id.main_content_container,
-                ArticleDetailFragment.getInstance(this, this, this, ArticleListSingleton.getInstance().getSectionArticles().get(position))).commit();
+        startActivity(new Intent(this, ArticleDetailActivity.class).putExtra(ARTICLE_INDEX, position));
 
     }
 
