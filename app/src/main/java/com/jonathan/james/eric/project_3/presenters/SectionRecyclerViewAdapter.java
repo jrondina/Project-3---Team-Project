@@ -9,6 +9,7 @@ import com.jonathan.james.eric.project_3.Article;
 import com.jonathan.james.eric.project_3.R;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
+import com.jonathan.james.eric.project_3.models.BookmarkHashtable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
     private SectionCardListener mCardListener;
 
     //TODO add hashtable for checking articles
+    private BookmarkHashtable mBookmarkHashtable;
 
 
     public SectionRecyclerViewAdapter(List<Article> mArticles, ArticleListener articleListener,
@@ -31,7 +33,7 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
         this.mArticles = mArticles;
         mArticleListener = articleListener;
         mCardListener = sectionCardListener;
-
+        mBookmarkHashtable = BookmarkHashtable.getInstance();
     }
 
     @Override
@@ -42,7 +44,9 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
 
     @Override
     public void onBindViewHolder(final SectionViewHolder holder, final int position) {
-
+        if(mBookmarkHashtable.isBookmarked(mArticles.get(position).getUrl())){
+            mArticles.get(position).setBookmark(true);
+        }
         holder.setBookmark(Boolean.valueOf(mArticles.get(position).isBookmark()));
 
         //on click listener to spawn a detail fragment
