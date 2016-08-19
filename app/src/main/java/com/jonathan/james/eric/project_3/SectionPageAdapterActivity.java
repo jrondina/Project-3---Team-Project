@@ -4,7 +4,6 @@ import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
@@ -19,21 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.facebook.CallbackManager;
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.ShareDialog;
-import com.github.scribejava.apis.TwitterApi;
-import com.github.scribejava.core.builder.ServiceBuilder;
-import com.github.scribejava.core.model.OAuth1AccessToken;
-import com.github.scribejava.core.model.OAuth1RequestToken;
-import com.github.scribejava.core.model.OAuthRequest;
-import com.github.scribejava.core.model.Response;
-import com.github.scribejava.core.model.Verb;
-import com.github.scribejava.core.oauth.OAuth10aService;
-
-
+import com.jonathan.james.eric.project_3.interfaces.APICallback;
 import com.jonathan.james.eric.project_3.interfaces.APIFetcher;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
@@ -41,17 +26,11 @@ import com.jonathan.james.eric.project_3.interfaces.SwipeListener;
 import com.jonathan.james.eric.project_3.interfaces.ToolbarLoadedCallback;
 import com.jonathan.james.eric.project_3.presenters.SectionsPagerAdapter;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.auth.AccessToken;
-
 
 public class SectionPageAdapterActivity extends AppCompatActivity implements APIFetcher, SwipeListener,
         NavigationView.OnNavigationItemSelectedListener, ArticleListener, SectionCardListener, ToolbarLoadedCallback {
@@ -75,17 +54,6 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     private APIServices mAPIServices;
     private ArrayList<Article> mCurrentSection;
     private ArrayList<Article> mCurrentQuery;
-
-    private CallbackManager callbackManager;
-    private ShareDialog shareDialog;
-
-
-    /*Twiter OAuth stuff no longer in use since we're doing intent for sharing
-    String CONSUMER_KEY_TW = "6FCKnOeCVFehIiunrWnL6itSO";
-    String CONSUMER_SECRET_TW = " c7kGW8TLiHywj367U1b8ScCSE1g86NZp2H1A3FHasfXrXlNf5u";
-    String ACCESS_TOKEN_TW = "";
-    String ACCESS_SECRET_TW = "";
-    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -212,6 +180,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 //                ((SectionViewPagerFragment)mManager.getFragment(null, "ViewPager")).setTab(
 //                        new UserPreferences().getSectionList().
 //                );
+                //TODO initiate a callback for the article
                 break;
             case R.id.world_section:
                 break;
@@ -265,7 +234,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     public void onCardClick(int position) {
         Log.d(TAG, "onCardClick: opening article detail");
         mManager.beginTransaction().addToBackStack("Sections").add(R.id.section_fragment_container,
-                ArticleDetailFragment.getInstance(this, this, this, mCurrentSection.get(position))).commit();
+                ArticleDetailFragment.getInstance(this, this, this, ArticleListSingleton.getInstance().getSectionArticles().get(position))).commit();
 
     }
 
@@ -289,26 +258,24 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     }
     //get the article list for the current section
     @Override
-    public ArrayList<Article> getArticles(String sectionName) {
-//        mCurrentSection = new ArrayList(mAPIServices.topNews(sectionName,
-//                mAPIServices.retrofitInit(this.getApplicationContext())));
+    public void getArticles(String sectionName, APICallback callback) {
+        mCurrentSection = new ArrayList(mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this), callback));
         Log.d(TAG, "getArticles: returning an article list - " + mCurrentSection.size());
 
         //test code
-        mCurrentSection = new ArrayList<Article>();
-        Article a = new Article();
-        a.setHeadline("Test Headline");
-        a.setByline("By Test Author");
-        a.setSection("world");
-        a.setUrl("http://www.nytimes.com/2016/08/13/sports/olympics/a-closer-look-at-simone-manuel-olympic-medalist-history-maker.html");
-        Multimedia m = new Multimedia();
-        m.setThumbnailImage("https://static01.nyt.com/images/2016/08/17/magazine/17mag-cholera-1/17mag-cholera-1-thumbLarge.jpg");
-        m.setRegularImage("https://static01.nyt.com/images/2016/08/17/magazine/17mag-cholera-1/17mag-cholera-1-superJumbo.jpg");
-        m.setCaption("Test Image");
-        a.setLeadimage(m);
-        mCurrentSection.add(a);
-        mCurrentSection.add(a);
-        return mCurrentSection;
+//        mCurrentSection = new ArrayList<Article>();
+//        Article a = new Article();
+//        a.setHeadline("Test Headline");
+//        a.setByline("By Test Author");
+//        a.setSection("world");
+//        a.setUrl("http://www.nytimes.com/2016/08/13/sports/olympics/a-closer-look-at-simone-manuel-olympic-medalist-history-maker.html");
+//        Multimedia m = new Multimedia();
+//        m.setThumbnailImage("https://static01.nyt.com/images/2016/08/17/magazine/17mag-cholera-1/17mag-cholera-1-thumbLarge.jpg");
+//        m.setRegularImage("https://static01.nyt.com/images/2016/08/17/magazine/17mag-cholera-1/17mag-cholera-1-superJumbo.jpg");
+//        m.setCaption("Test Image");
+//        a.setLeadimage(m);
+//        mCurrentSection.add(a);
+//        mCurrentSection.add(a);
     }
 
     @Override

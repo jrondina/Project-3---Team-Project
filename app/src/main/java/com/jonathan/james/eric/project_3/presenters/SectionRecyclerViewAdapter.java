@@ -75,7 +75,11 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
         holder.setLeadParagraphText(mArticles.get(position).getLeadParagraph());
         holder.setDateText(mArticles.get(position).getDate());
 
+        if(mArticles.get(position).getLeadImage().getThumbnailImage() != null){
         holder.setThumbnail(mArticles.get(position).getLeadImage().getThumbnailImage());
+        }else {
+            holder.hideThumbnail();
+        }
     }
 
     @Override
@@ -83,7 +87,7 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
         return mArticles.size();
     }
 
-    public void changeArticleList(ArrayList<Article> articles){
+    public void changeArticleList(List<Article> articles){
         mArticles = articles;
         notifyDataSetChanged();
     }

@@ -20,7 +20,6 @@ import java.util.Arrays;
 import io.realm.RealmChangeListener;
 import io.realm.RealmList;
 import io.realm.RealmResults;
-import twitter4j.User;
 
 /**
  * Created by Jonathan Taylor on 8/15/16.
@@ -59,13 +58,19 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter implements RealmC
             realmArticles.addChangeListener(this);
             //messy method to convert the RealmResults to ArrayList... Probably needs to be refactored
             articles = new ArrayList<>(Arrays.asList((Article[])realmArticles.toArray()));
+
+            return SectionFragment.getInstance(articles,
+                    mSectionCardListener, mArticleListener);
         } else {
             //get an instance of the section singleton to pull the article list from the API
-            articles = mFetcher.getArticles(mSectionNames.get(position).getKey());
+            SectionFragment sectionFragment = SectionFragment.getInstance(
+                    new ArrayList<Article>(), mSectionCardListener, mArticleListener);
+            mFetcher.getArticles(mSectionNames.get(position).getKey(), sectionFragment);
+
+            return sectionFragment;
         }
 
-        return SectionFragment.getInstance(articles,
-                mSectionCardListener, mArticleListener);
+
     }
 
     @Override
