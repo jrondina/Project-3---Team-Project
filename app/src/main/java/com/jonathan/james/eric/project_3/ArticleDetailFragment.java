@@ -63,6 +63,7 @@ public class ArticleDetailFragment extends Fragment {
         super.onResume();
 
         mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.getSettings().setDomStorageEnabled(true);
         mWebView.setWebViewClient(new WebViewClient() {
             //TODO: add error catching here with "onReceivedError"
                                   });

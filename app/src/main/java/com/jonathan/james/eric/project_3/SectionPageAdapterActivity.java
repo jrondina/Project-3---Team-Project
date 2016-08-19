@@ -24,6 +24,7 @@ import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
 import com.jonathan.james.eric.project_3.interfaces.SwipeListener;
 import com.jonathan.james.eric.project_3.interfaces.ToolbarLoadedCallback;
+import com.jonathan.james.eric.project_3.models.BookmarkHashtable;
 import com.jonathan.james.eric.project_3.presenters.SectionsPagerAdapter;
 
 import java.util.ArrayList;
@@ -78,6 +79,8 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
         RealmConfiguration config = new RealmConfiguration.Builder(this.getApplicationContext()).build();
         Realm.setDefaultConfiguration(config);
 
+
+
         //initialize the UserPreferences object
         RealmUtility realmUtility = new RealmUtility();
         if(realmUtility.getUserPreferences() == null) {
@@ -86,7 +89,8 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
             realmUtility.deleteUserPreferences(realmUtility.getUserPreferences());
             realmUtility.initUserPrefs();
         }
-
+        //Initialize the bookmark hashtable
+        realmUtility.initBookmarkHashtable();
 
     }
 
@@ -265,7 +269,6 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     }
 
     private void shareLink(String url) {
-
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, url);
