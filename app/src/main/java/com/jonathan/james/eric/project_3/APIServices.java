@@ -162,9 +162,9 @@ public class APIServices {
 
                     if (article.getMultimedia().size() != 0) {
                         newMultimedia.setCaption(article.getMultimedia().get(0).getCaption());
-                        newMultimedia.setThumbnailImage("ThumbURL: " +
+                        newMultimedia.setThumbnailImage(
                                 article.getMultimedia().get(IMG_TOP_THUMB).getUrl());
-                        newMultimedia.setRegularImage("LargeURL: " +
+                        newMultimedia.setRegularImage(
                                 article.getMultimedia().get(IMG_TOP_LARGE).getUrl());
                     }
 
