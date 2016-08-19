@@ -56,6 +56,7 @@ public class SectionRecyclerViewAdapter extends RecyclerView.Adapter<SectionView
     public void onBindViewHolder(final SectionViewHolder holder, final int position) {
         if(mBookmarkHashtable.isBookmarked(mArticles.get(position).getUrl()) && mType == 0){
             mArticles.get(position).setBookmark(true);
+            Log.d(TAG, "onBindViewHolder: article is " + mArticles.get(position).isBookmark());
         }
         holder.setBookmark(Boolean.valueOf(mArticles.get(position).isBookmark()));
 

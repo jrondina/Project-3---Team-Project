@@ -83,7 +83,6 @@ public class ArticleDetailActivity extends AppCompatActivity implements ArticleL
         }
         if(id == R.id.action_bookmark){
             onBookMarkClick(mArticle, this);
-            mArticle.setBookmark(!mArticle.isBookmark());
         }
         return super.onOptionsItemSelected(item);
     }
