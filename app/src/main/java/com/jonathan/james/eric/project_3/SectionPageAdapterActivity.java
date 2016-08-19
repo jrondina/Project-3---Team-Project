@@ -24,16 +24,18 @@ import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
 import com.jonathan.james.eric.project_3.interfaces.SwipeListener;
 import com.jonathan.james.eric.project_3.interfaces.ToolbarLoadedCallback;
+import com.jonathan.james.eric.project_3.models.BookmarkHashtable;
 import com.jonathan.james.eric.project_3.presenters.SectionsPagerAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 
 public class SectionPageAdapterActivity extends AppCompatActivity implements APIFetcher, SwipeListener,
-        NavigationView.OnNavigationItemSelectedListener, ArticleListener, SectionCardListener, ToolbarLoadedCallback {
+        NavigationView.OnNavigationItemSelectedListener, ArticleListener, SectionCardListener, ToolbarLoadedCallback, APICallback {
 
     private static final String TAG = "MainActivity";
 
@@ -77,14 +79,18 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
         RealmConfiguration config = new RealmConfiguration.Builder(this.getApplicationContext()).build();
         Realm.setDefaultConfiguration(config);
 
-        //initialize the UserPreferences object
-        if(new RealmUtility().getUserPreferences() == null) {
-            initUserPrefs();
-        } else{
-            new RealmUtility().deleteUserPreferences(new RealmUtility().getUserPreferences());
-            initUserPrefs();
-        }
 
+
+        //initialize the UserPreferences object
+        RealmUtility realmUtility = new RealmUtility();
+        if(realmUtility.getUserPreferences() == null) {
+            realmUtility.initUserPrefs();
+        } else{
+            realmUtility.deleteUserPreferences(realmUtility.getUserPreferences());
+            realmUtility.initUserPrefs();
+        }
+        //Initialize the bookmark hashtable
+        realmUtility.initBookmarkHashtable();
 
     }
 
@@ -135,7 +141,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
         super.onResume();
 
         Log.d(TAG, "onResume: Creating the manager and Fragments");
-        mManager.beginTransaction().add(R.id.main_content_container, SectionViewPagerFragment.getInstance(mManager,
+        mManager.beginTransaction().replace(R.id.main_content_container, SectionViewPagerFragment.getInstance(mManager,
                 this, this, this, this), "ViewPager").commit();
     }
 
@@ -183,33 +189,47 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        //ToDo add one for each Section -- Also be sure to check if the source is active or not and spawn the fragment accordingly
+        String sectionName = null;
+        //ToDo swap out the hard coded values, but need a way to find the section object by name...
         switch(id){
             case R.id.top_news_section:
 //                ((SectionViewPagerFragment)mManager.getFragment(null, "ViewPager")).setTab(
 //                        new UserPreferences().getSectionList().
 //                );
-                //TODO initiate a callback for the article
+                sectionName = "home";
                 break;
             case R.id.world_section:
+                sectionName = "world";
                 break;
             case R.id.technology_section:
+                sectionName = "technology";
                 break;
             case R.id.business_section:
+                sectionName = "business";
                 break;
             case R.id.politics_section:
+                sectionName = "politics";
                 break;
             case R.id.science_section:
+                sectionName = "science";
                 break;
             case R.id.sports_section:
+                sectionName = "sports";
                 break;
             case R.id.entertainment_section:
+                sectionName = "movies";
                 break;
             case R.id.bookmarks_section:
-                break;
+                Log.d(TAG, "onNavigationItemSelected: starting the bookmark specific fragment");
+                mManager.beginTransaction().replace(R.id.section_fragment_container,
+                        SectionFragment.getInstance(new RealmUtility().getBookmarkedArticles(), 1, this, this))
+                    .commit();
         }
-
+        if(sectionName != null) {
+            Log.d(TAG, "onNavigationItemSelected: starting the fragment for section " + sectionName);
+            mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this.getApplicationContext()),
+                    this);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -220,12 +240,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     public void onBookMarkClick(Article a) {
         RealmUtility realmUtility = new RealmUtility();
         //toggle the boolean for is bookmarked
-        a.setBookmark(!a.isBookmark());
-        if(a.isBookmark()) {
-            realmUtility.insertArticle(a);
-        } else{
-            realmUtility.deleteArticle(a);
-        }
+        realmUtility.toggleBookmark(a);
     }
 
     @Override
@@ -243,13 +258,12 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     @Override
     public void onCardClick(int position) {
         Log.d(TAG, "onCardClick: opening article detail");
-        mManager.beginTransaction().addToBackStack("Sections").add(R.id.section_fragment_container,
+        mManager.beginTransaction().addToBackStack("Sections").replace(R.id.section_fragment_container,
                 ArticleDetailFragment.getInstance(this, this, this, ArticleListSingleton.getInstance().getSectionArticles().get(position))).commit();
 
     }
 
     private void shareLink(String url) {
-
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, url);
@@ -302,5 +316,11 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public void responseFinished(List<Article> responseList) {
+        mManager.beginTransaction().replace(R.id.section_fragment_container, SectionFragment.getInstance(
+                responseList, 1, this, this)).commit();
     }
 }

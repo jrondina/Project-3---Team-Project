@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.jonathan.james.eric.project_3.interfaces.APICallback;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
@@ -19,6 +20,8 @@ import com.jonathan.james.eric.project_3.presenters.SectionRecyclerViewAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.RealmResults;
+
 /**
  * Created by Jonathan Taylor on 8/15/16.
  */
@@ -27,6 +30,10 @@ public class SectionFragment extends Fragment implements APICallback{
     private static final String TAG = "SectionFragment";
 
     private List<Article> mArticles;
+    //type to determine if bookmarks or API call based
+    //0 - APICall
+    //1 - bookmarks
+    private int mType;
 
     private RecyclerView mRecyclerView;
     private SectionRecyclerViewAdapter mAdapter;
@@ -35,13 +42,15 @@ public class SectionFragment extends Fragment implements APICallback{
     private ArticleListener mArticleListener;
 
     private Context context;
+    private TextView mMissingContent;
 
-    public static SectionFragment getInstance(List<Article> articles,
+    public static SectionFragment getInstance(List<Article> articles, int type,
                                               SectionCardListener sectionCardListener, ArticleListener articleListener){
         SectionFragment fragment = new SectionFragment();
         fragment.mCardViewListener = sectionCardListener;
         fragment.mArticleListener = articleListener;
         fragment.mArticles = articles;
+        fragment.mType = type;
         return fragment;
     }
 
@@ -51,9 +60,10 @@ public class SectionFragment extends Fragment implements APICallback{
         View rootView = inflater.inflate(R.layout.fragment_section, container, false);
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.section_fragment_recycler_view);
+        mMissingContent = (TextView) rootView.findViewById(R.id._section_fragment_missing_message);
 
         //setup the new adapter
-        mAdapter = new SectionRecyclerViewAdapter(mArticles, mArticleListener, mCardViewListener);
+        mAdapter = new SectionRecyclerViewAdapter(mArticles, mArticleListener, mCardViewListener, mType);
 
         return rootView;
     }
@@ -64,6 +74,11 @@ public class SectionFragment extends Fragment implements APICallback{
         Log.d(TAG, "onViewCreated: setting recycler view");
 
         context = view.getContext();
+
+        //Show a message on the screen if no content
+        if(mArticles == null && mType == 1){
+            mMissingContent.setVisibility(View.VISIBLE);
+        }
 
 //        mRecyclerView.setAdapter(mAdapter);
 //        mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
@@ -77,13 +92,18 @@ public class SectionFragment extends Fragment implements APICallback{
     @Override
     public void onResume() {
         super.onResume();
-        if(mArticles == null){
+        if(mArticles == null && mType == 0){
             mArticles = ArticleListSingleton.getInstance().getSectionArticles();
             mAdapter.changeArticleList(mArticles);
+        } else if(mArticles == null && mType == 1){
+            new RealmUtility().getBookmarkedArticles();
         }
+
 
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+
+        //TODO spawn dialogue if there are no bookmark articles
 
     }
 
