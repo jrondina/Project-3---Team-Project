@@ -13,6 +13,10 @@ import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.scrollTo;
+import static android.support.test.espresso.action.ViewActions.swipeDown;
+import static android.support.test.espresso.action.ViewActions.swipeLeft;
+import static android.support.test.espresso.action.ViewActions.swipeRight;
+import static android.support.test.espresso.action.ViewActions.swipeUp;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
@@ -32,19 +36,27 @@ public class SectionPageAdapterTest {
             new ActivityTestRule<SectionPageAdapterActivity>(SectionPageAdapterActivity.class);
 
     @Test
+    public void testSwipes() throws Exception {
+        onView(withId(R.id.section_fragment_container)).perform(swipeDown());
+        onView(withId(R.id.section_fragment_container)).perform(swipeUp());
+        onView(withId(R.id.section_fragment_container)).perform(swipeLeft());
+        onView(withId(R.id.section_fragment_container)).perform(swipeDown());
+        onView(withId(R.id.section_fragment_container)).perform(swipeUp());
+        onView(withId(R.id.section_fragment_container)).perform(swipeRight());
+        onView(withId(R.id.section_fragment_container)).perform(click());
+    }
+
+    @Test
     public void testclick() throws Exception {
 
-        onView(withId(R.id.section_fragment_recycler_view))
+        onView(withId(R.id.section_fragment_container))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(1,click()));
 
-        onView(withId(R.id.section_fragment_recycler_view))
+        onView(withId(R.id.section_fragment_container))
                 .perform(RecyclerViewActions.scrollToPosition(4));
 
-
-
-
-
-
+        onView(withId(R.id.section_fragment_container))
+                .perform(click());
 
     }
 
