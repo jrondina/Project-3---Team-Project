@@ -3,6 +3,7 @@ package com.jonathan.james.eric.project_3;
 import android.support.annotation.UiThread;
 import android.util.Log;
 
+import com.jonathan.james.eric.project_3.interfaces.BookmarkChangeListener;
 import com.jonathan.james.eric.project_3.models.BookmarkHashtable;
 
 import java.io.Closeable;
@@ -389,7 +390,7 @@ public class RealmUtility implements Closeable{
     }
 
     //method to toggle whether an article is bookmarked or not (i.e. add or remove it from the database)
-    public boolean toggleBookmark(Article a){
+    public boolean toggleBookmark(Article a, BookmarkChangeListener bookmarkChangeListener){
         boolean bookmarked;
         realm.beginTransaction();
         a.setBookmark(!a.isBookmark());
@@ -397,10 +398,13 @@ public class RealmUtility implements Closeable{
             insertArticle(a);
             bookmarked = true;
         } else{
+            Log.d(TAG, "toggleBookmark: deleting article " + a.getHeadline());
             deleteArticle(a);
             bookmarked = false;
         }
         realm.commitTransaction();
+        Log.d(TAG, "toggleBookmark: finished toggling bookmark");
+        bookmarkChangeListener.bookmarksChanged();
         return bookmarked;
     }
 

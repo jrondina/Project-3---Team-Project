@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.jonathan.james.eric.project_3.interfaces.APICallback;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
+import com.jonathan.james.eric.project_3.interfaces.BookmarkChangeListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
 import com.jonathan.james.eric.project_3.presenters.SectionRecyclerViewAdapter;
 
@@ -25,7 +26,7 @@ import io.realm.RealmResults;
 /**
  * Created by Jonathan Taylor on 8/15/16.
  */
-public class SectionFragment extends Fragment implements APICallback{
+public class SectionFragment extends Fragment implements APICallback, BookmarkChangeListener{
 
     private static final String TAG = "SectionFragment";
 
@@ -54,6 +55,12 @@ public class SectionFragment extends Fragment implements APICallback{
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -63,7 +70,8 @@ public class SectionFragment extends Fragment implements APICallback{
         mMissingContent = (TextView) rootView.findViewById(R.id._section_fragment_missing_message);
 
         //setup the new adapter
-        mAdapter = new SectionRecyclerViewAdapter(mArticles, mArticleListener, mCardViewListener, mType);
+        mAdapter = new SectionRecyclerViewAdapter(mArticles, mArticleListener, mCardViewListener, this, mType);
+        setRetainInstance(true);
 
         return rootView;
     }
@@ -96,7 +104,7 @@ public class SectionFragment extends Fragment implements APICallback{
             mArticles = ArticleListSingleton.getInstance().getSectionArticles();
             mAdapter.changeArticleList(mArticles);
         } else if(mArticles == null && mType == 1){
-            new RealmUtility().getBookmarkedArticles();
+            mArticles = new RealmUtility().getBookmarkedArticles();
         }
 
 
@@ -109,6 +117,14 @@ public class SectionFragment extends Fragment implements APICallback{
 
     @Override
     public void responseFinished(List<Article> responseList) {
-        changeArticleList(new ArrayList<Article>(responseList));
+        changeArticleList(new ArrayList<>(responseList));
+    }
+
+    @Override
+    public void bookmarksChanged() {
+        if(mType == 1) {
+            mArticles = new RealmUtility().getBookmarkedArticles();
+            mAdapter.changeArticleList(mArticles);
+        }
     }
 }
