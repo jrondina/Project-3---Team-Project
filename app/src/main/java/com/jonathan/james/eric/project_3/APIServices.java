@@ -106,10 +106,14 @@ public class APIServices {
                     Article newArticle = new Article();
                     Multimedia newMultimedia = new Multimedia();
 
+                    StringBuilder sb = new StringBuilder(article.getPubDate());
+                    sb.setLength(10);
+                    String pubDate = sb.toString();
+
                     newArticle.setArticleSource("New York Times");
                     newArticle.setLeadimage(newMultimedia);
                     newArticle.setHeadline(article.getHeadline().getMain());
-                    newArticle.setDate(article.getPubDate());
+                    newArticle.setDate(pubDate);
                     newArticle.setLeadParagraph(article.getAbstract());
                     newArticle.setSection(article.getSectionName());
                     newArticle.setUrl(article.getWebUrl());
@@ -168,10 +172,14 @@ public class APIServices {
                                 article.getMultimedia().get(IMG_TOP_LARGE).getUrl());
                     }
 
+                    StringBuilder sb = new StringBuilder(article.getPublishedDate());
+                    sb.setLength(10);
+                    String pubDate = sb.toString();
+
                     newArticle.setArticleSource("New York Times");
                     newArticle.setLeadimage(newMultimedia);
                     newArticle.setHeadline(article.getTitle());
-                    newArticle.setDate(article.getPublishedDate());
+                    newArticle.setDate(pubDate);
                     newArticle.setLeadParagraph(article.getAbstract());
                     newArticle.setSection(article.getSection());
                     newArticle.setUrl(article.getUrl());

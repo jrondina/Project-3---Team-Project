@@ -49,7 +49,8 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
     private FragmentManager mManager;
 
-    long NOTIFICATION_INTERVAL = 10_800_000; //3 hours in milliseconds
+    long NOTIFICATION_INTERVAL = 60000; //3 hours in milliseconds
+    public static final int NAME_REQUEST = 1;
 
     private APIServices mAPIServices;
     private ArrayList<Article> mCurrentSection;
@@ -65,7 +66,8 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
                 (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         jobScheduler.schedule(noteScheduler()); //schedules notifications at intervals
 
-
+        Intent intent = new Intent(SectionPageAdapterActivity.this,SettingsActivity.class);
+        startActivityForResult(intent,NAME_REQUEST);
 
 
         mAPIServices = new APIServices(); //instantiates an API Service
@@ -173,8 +175,8 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            //TODO finish intent to go to Settings page
-            Intent settingsIntent = new Intent();
+            Intent settingsIntent = new Intent(SectionPageAdapterActivity.this, SettingsActivity.class);
+            startActivity(settingsIntent);
             return true;
         }
         if (id == R.id.action_search){
