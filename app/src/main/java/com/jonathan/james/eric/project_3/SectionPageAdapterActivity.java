@@ -21,10 +21,10 @@ import android.view.MenuItem;
 import com.jonathan.james.eric.project_3.interfaces.APICallback;
 import com.jonathan.james.eric.project_3.interfaces.APIFetcher;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
+import com.jonathan.james.eric.project_3.interfaces.BookmarkChangeListener;
 import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
 import com.jonathan.james.eric.project_3.interfaces.SwipeListener;
 import com.jonathan.james.eric.project_3.interfaces.ToolbarLoadedCallback;
-import com.jonathan.james.eric.project_3.models.BookmarkHashtable;
 import com.jonathan.james.eric.project_3.presenters.SectionsPagerAdapter;
 
 import java.util.ArrayList;
@@ -237,10 +237,10 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     }
 
     @Override
-    public void onBookMarkClick(Article a) {
+    public void onBookMarkClick(Article a, BookmarkChangeListener bookmarkChangeListener) {
         RealmUtility realmUtility = new RealmUtility();
         //toggle the boolean for is bookmarked
-        realmUtility.toggleBookmark(a);
+        realmUtility.toggleBookmark(a, bookmarkChangeListener);
     }
 
     @Override
@@ -258,7 +258,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     @Override
     public void onCardClick(int position) {
         Log.d(TAG, "onCardClick: opening article detail");
-        mManager.beginTransaction().addToBackStack("Sections").replace(R.id.section_fragment_container,
+        mManager.beginTransaction().addToBackStack("Sections").replace(R.id.main_content_container,
                 ArticleDetailFragment.getInstance(this, this, this, ArticleListSingleton.getInstance().getSectionArticles().get(position))).commit();
 
     }
@@ -320,7 +320,8 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
     @Override
     public void responseFinished(List<Article> responseList) {
-        mManager.beginTransaction().replace(R.id.section_fragment_container, SectionFragment.getInstance(
-                responseList, 1, this, this)).commit();
+        mManager.getFragment(null, "ViewPager");
+        //mManager.beginTransaction().replace(R.id.section_fragment_container, SectionFragment.getInstance(
+                //responseList, 1, this, this)).commit();
     }
 }

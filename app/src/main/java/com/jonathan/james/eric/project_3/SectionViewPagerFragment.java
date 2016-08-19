@@ -95,8 +95,8 @@ public class SectionViewPagerFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    public void setTab(int index){
-        mViewPager.setCurrentItem(index);
+    public void setTab(String sectionName){
+//        mViewPager.getAdapter().
     }
 
 }
