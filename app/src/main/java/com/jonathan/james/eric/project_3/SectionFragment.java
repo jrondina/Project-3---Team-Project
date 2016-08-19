@@ -55,6 +55,12 @@ public class SectionFragment extends Fragment implements APICallback, BookmarkCh
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -65,6 +71,7 @@ public class SectionFragment extends Fragment implements APICallback, BookmarkCh
 
         //setup the new adapter
         mAdapter = new SectionRecyclerViewAdapter(mArticles, mArticleListener, mCardViewListener, this, mType);
+        setRetainInstance(true);
 
         return rootView;
     }

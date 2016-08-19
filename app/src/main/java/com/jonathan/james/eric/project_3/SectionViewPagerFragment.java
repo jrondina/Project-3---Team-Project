@@ -59,6 +59,7 @@ public class SectionViewPagerFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        setRetainInstance(true);
     }
 
     @Nullable
@@ -72,6 +73,8 @@ public class SectionViewPagerFragment extends Fragment {
 
         // Get a reference to the TabLayout
         tabLayout = (TabLayout) rootView.findViewById(R.id.section_tabs);
+
+        setRetainInstance(true);
 
         return rootView;
 
