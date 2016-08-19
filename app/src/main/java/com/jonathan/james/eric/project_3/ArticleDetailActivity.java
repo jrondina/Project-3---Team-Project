@@ -15,6 +15,8 @@ import com.jonathan.james.eric.project_3.interfaces.BookmarkChangeListener;
 
 public class ArticleDetailActivity extends AppCompatActivity implements ArticleListener, BookmarkChangeListener {
 
+    private static final String TAG = "ArticleDetailActivity";
+
     private Article mArticle;
     private int articleIndex;
 
@@ -32,7 +34,7 @@ public class ArticleDetailActivity extends AppCompatActivity implements ArticleL
         setSupportActionBar(toolbar);
 
         articleIndex = getIntent().getIntExtra(SectionPageAdapterActivity.ARTICLE_INDEX, -1);
-        if(articleIndex > 0){
+        if(articleIndex >= 0){
             mArticle = ArticleListSingleton.getInstance().getSectionArticles().get(articleIndex);
         }
 
@@ -43,9 +45,7 @@ public class ArticleDetailActivity extends AppCompatActivity implements ArticleL
     protected void onResume() {
         super.onResume();
         if(mArticle != null){
-            if(mArticle.isBookmark()){
-                mMenu.findItem(R.id.action_bookmark).setIcon(R.drawable.ic_bookmark_black_24dp);
-            }
+
 
             mWebView.getSettings().setJavaScriptEnabled(true);
             mWebView.getSettings().setDomStorageEnabled(true);
@@ -62,6 +62,11 @@ public class ArticleDetailActivity extends AppCompatActivity implements ArticleL
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.article_detail, menu);
         mMenu = menu;
+
+        if(mArticle != null && mArticle.isBookmark()){
+            Log.d(TAG, "onResume: changing to bookmarked icon");
+            mMenu.findItem(R.id.action_bookmark).setIcon(R.drawable.ic_bookmark_black_24dp);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
