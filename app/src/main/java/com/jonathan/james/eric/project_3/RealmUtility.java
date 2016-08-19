@@ -114,7 +114,10 @@ public class RealmUtility implements Closeable{
     }
 
     public UserPreferences getUserPreferences(){
-        UserPreferences preferences = realm.where(UserPreferences.class).findAll().first();
+        UserPreferences preferences = null;
+        RealmResults<UserPreferences> userPreferences = realm.where(UserPreferences.class).findAll();
+                if(userPreferences.size() > 0){
+                return userPreferences.first();}
         return preferences;
     }
 
