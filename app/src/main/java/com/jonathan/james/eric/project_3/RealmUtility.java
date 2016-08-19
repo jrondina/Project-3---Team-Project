@@ -130,42 +130,53 @@ public class RealmUtility implements Closeable{
 
     public void insertUserPreferences(final UserPreferences i){
 
-        RealmAsyncTask realmAsyncTask = realm.executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm bgRealm) {
-                bgRealm.insert(i);
-            }
-
-
-        }, new Realm.Transaction.OnError() {
-            @Override
-            public void onError(Throwable error) {
-                Log.e(TAG,"Error Writing User Preferences Realm Object to DB",error);
-
-            }
-        });
+//        RealmAsyncTask realmAsyncTask = realm.executeTransactionAsync(new Realm.Transaction() {
+//            @Override
+//            public void execute(Realm bgRealm) {
+//                bgRealm.insert(i);
+//            }
+//
+//
+//        }, new Realm.Transaction.OnError() {
+//            @Override
+//            public void onError(Throwable error) {
+//                Log.e(TAG,"Error Writing User Preferences Realm Object to DB",error);
+//
+//            }
+//        });
+        realm.beginTransaction();
+        realm.insert(i);
+        realm.commitTransaction();
     }
 
     public void deleteUserPreferences(UserPreferences up){
         final String query = up.getUserName();
-        RealmAsyncTask realmAsyncTask = realm.executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm bgRealm) {
-                RealmResults<UserPreferences> results = bgRealm.where(UserPreferences.class)
+//        RealmAsyncTask realmAsyncTask = realm.executeTransactionAsync(new Realm.Transaction() {
+//            @Override
+//            public void execute(Realm bgRealm) {
+//                RealmResults<UserPreferences> results = bgRealm.where(UserPreferences.class)
+//                        .contains("userName",query)
+//                        .findAll();
+//                Log.d(TAG, "execute: realm results contains " + results.size());
+//                results.deleteAllFromRealm();
+//            }
+//
+//
+//        }, new Realm.Transaction.OnError() {
+//            @Override
+//            public void onError(Throwable error) {
+//                Log.e(TAG,"Error Deleting User Preferences Realm Object from DB",error);
+//
+//            }
+//        });
+
+        RealmResults<UserPreferences> results = realm.where(UserPreferences.class)
                         .contains("userName",query)
                         .findAll();
                 Log.d(TAG, "execute: realm results contains " + results.size());
-                results.deleteAllFromRealm();
-            }
-
-
-        }, new Realm.Transaction.OnError() {
-            @Override
-            public void onError(Throwable error) {
-                Log.e(TAG,"Error Deleting User Preferences Realm Object from DB",error);
-
-            }
-        });
+        realm.beginTransaction();
+        results.deleteAllFromRealm();
+        realm.commitTransaction();
 
     }
 
@@ -297,7 +308,7 @@ public class RealmUtility implements Closeable{
     }
     */
 
-    private void initUserPrefs(){
+    public void initUserPrefs(){
         UserPreferences userPreferences = new UserPreferences();
         RealmList<Section> sections = new RealmList<>();
         Section home = new Section();

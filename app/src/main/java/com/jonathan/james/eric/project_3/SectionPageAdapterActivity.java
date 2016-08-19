@@ -79,11 +79,12 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
         Realm.setDefaultConfiguration(config);
 
         //initialize the UserPreferences object
-        if(new RealmUtility().getUserPreferences() == null) {
-            initUserPrefs();
+        RealmUtility realmUtility = new RealmUtility();
+        if(realmUtility.getUserPreferences() == null) {
+            realmUtility.initUserPrefs();
         } else{
-            new RealmUtility().deleteUserPreferences(new RealmUtility().getUserPreferences());
-            initUserPrefs();
+            realmUtility.deleteUserPreferences(realmUtility.getUserPreferences());
+            realmUtility.initUserPrefs();
         }
 
 
