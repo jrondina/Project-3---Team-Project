@@ -158,7 +158,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
         Log.d(TAG, "onResume: Creating the manager and Fragments");
         mManager.beginTransaction().add(R.id.main_content_container, SectionViewPagerFragment.getInstance(mManager,
-                this, this, this, this)).commit();
+                this, this, this, this), "ViewPager").commit();
     }
 
     @Override
@@ -208,9 +208,28 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
         //ToDo add one for each Section -- Also be sure to check if the source is active or not and spawn the fragment accordingly
         switch(id){
-
+            case R.id.top_news_section:
+//                ((SectionViewPagerFragment)mManager.getFragment(null, "ViewPager")).setTab(
+//                        new UserPreferences().getSectionList().
+//                );
+                break;
+            case R.id.world_section:
+                break;
+            case R.id.technology_section:
+                break;
+            case R.id.business_section:
+                break;
+            case R.id.politics_section:
+                break;
+            case R.id.science_section:
+                break;
+            case R.id.sports_section:
+                break;
+            case R.id.entertainment_section:
+                break;
+            case R.id.bookmarks_section:
+                break;
         }
-
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -271,23 +290,24 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     //get the article list for the current section
     @Override
     public ArrayList<Article> getArticles(String sectionName) {
-        mCurrentSection = new ArrayList(mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this)));
+//        mCurrentSection = new ArrayList(mAPIServices.topNews(sectionName,
+//                mAPIServices.retrofitInit(this.getApplicationContext())));
         Log.d(TAG, "getArticles: returning an article list - " + mCurrentSection.size());
 
         //test code
-//        mCurrentSection = new ArrayList<Article>();
-//        Article a = new Article();
-//        a.setHeadline("Test Headline");
-//        a.setByline("By Test Author");
-//        a.setSection("world");
-//        a.setUrl("http://www.nytimes.com/2016/08/13/sports/olympics/a-closer-look-at-simone-manuel-olympic-medalist-history-maker.html");
-//        Multimedia m = new Multimedia();
-//        m.setThumbnailImage("https://static01.nyt.com/images/2016/08/17/magazine/17mag-cholera-1/17mag-cholera-1-thumbLarge.jpg");
-//        m.setRegularImage("https://static01.nyt.com/images/2016/08/17/magazine/17mag-cholera-1/17mag-cholera-1-superJumbo.jpg");
-//        m.setCaption("Test Image");
-//        a.setLeadimage(m);
-//        mCurrentSection.add(a);
-//        mCurrentSection.add(a);
+        mCurrentSection = new ArrayList<Article>();
+        Article a = new Article();
+        a.setHeadline("Test Headline");
+        a.setByline("By Test Author");
+        a.setSection("world");
+        a.setUrl("http://www.nytimes.com/2016/08/13/sports/olympics/a-closer-look-at-simone-manuel-olympic-medalist-history-maker.html");
+        Multimedia m = new Multimedia();
+        m.setThumbnailImage("https://static01.nyt.com/images/2016/08/17/magazine/17mag-cholera-1/17mag-cholera-1-thumbLarge.jpg");
+        m.setRegularImage("https://static01.nyt.com/images/2016/08/17/magazine/17mag-cholera-1/17mag-cholera-1-superJumbo.jpg");
+        m.setCaption("Test Image");
+        a.setLeadimage(m);
+        mCurrentSection.add(a);
+        mCurrentSection.add(a);
         return mCurrentSection;
     }
 
