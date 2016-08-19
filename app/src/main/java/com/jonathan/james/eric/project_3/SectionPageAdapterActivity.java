@@ -159,7 +159,8 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.section_page_adapter, menu);
+        super.onCreateOptionsMenu(menu);
         return true;
     }
 
@@ -177,9 +178,6 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
             return true;
         }
         if (id == R.id.action_search){
-
-        }
-        if (id == R.id.action_share){
 
         }
 
@@ -309,6 +307,8 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
     @Override
     public void ToolbarLoaded(Toolbar toolbar) {
+        setSupportActionBar(toolbar);
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);

@@ -3,6 +3,7 @@ package com.jonathan.james.eric.project_3;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,12 +20,16 @@ public class ArticleDetailActivity extends AppCompatActivity implements ArticleL
 
     private WebView mWebView;
 
+    private Toolbar toolbar;
+
     private Menu mMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_bar_article_detail);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         articleIndex = getIntent().getIntExtra(SectionPageAdapterActivity.ARTICLE_INDEX, -1);
         if(articleIndex > 0){
@@ -39,7 +44,7 @@ public class ArticleDetailActivity extends AppCompatActivity implements ArticleL
         super.onResume();
         if(mArticle != null){
             if(mArticle.isBookmark()){
-                mMenu.getItem(R.id.action_bookmark).setIcon(R.drawable.ic_bookmark_black_24dp);
+                mMenu.findItem(R.id.action_bookmark).setIcon(R.drawable.ic_bookmark_black_24dp);
             }
 
             mWebView.getSettings().setJavaScriptEnabled(true);
@@ -106,9 +111,9 @@ public class ArticleDetailActivity extends AppCompatActivity implements ArticleL
     @Override
     public void bookmarksChanged() {
         if(mArticle.isBookmark()) {
-            mMenu.getItem(R.id.action_bookmark).setIcon(R.drawable.ic_bookmark_black_24dp);
+            mMenu.findItem(R.id.action_bookmark).setIcon(R.drawable.ic_bookmark_black_24dp);
         } else{
-            mMenu.getItem(R.id.action_bookmark).setIcon(R.drawable.ic_bookmark_border_black_24dp);
+            mMenu.findItem(R.id.action_bookmark).setIcon(R.drawable.ic_bookmark_border_black_24dp);
         }
     }
 }
