@@ -218,7 +218,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
             case R.id.bookmarks_section:
                 Log.d(TAG, "onNavigationItemSelected: starting the bookmark specific fragment");
                 mManager.beginTransaction().add(R.id.section_fragment_container,
-                        SectionFragment.getInstance(new RealmUtility().getBookmarkedArticles(), this, this))
+                        SectionFragment.getInstance(new RealmUtility().getBookmarkedArticles(), 1, this, this))
                     .commit();
         }
         if(sectionName != null) {
@@ -323,6 +323,6 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     @Override
     public void responseFinished(List<Article> responseList) {
         mManager.beginTransaction().add(R.id.section_fragment_container, SectionFragment.getInstance(
-                responseList, this, this)).commit();
+                responseList, 1, this, this)).commit();
     }
 }

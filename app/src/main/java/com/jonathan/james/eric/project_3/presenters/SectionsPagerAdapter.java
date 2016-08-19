@@ -17,6 +17,7 @@ import com.jonathan.james.eric.project_3.interfaces.SectionCardListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import io.realm.RealmChangeListener;
 import io.realm.RealmList;
@@ -59,15 +60,15 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter implements RealmC
             RealmUtility realmUtility = new RealmUtility();
             RealmResults<Article> realmArticles = realmUtility.getBookmarkedArticles();
             realmArticles.addChangeListener(this);
+            Log.d(TAG, "getItem: RealmResults size - " + realmArticles.size());
             //messy method to convert the RealmResults to ArrayList... Probably needs to be refactored
-            articles = new ArrayList<>(Arrays.asList((Article[])realmArticles.toArray()));
+            articles = new ArrayList(realmArticles);
 
-            return SectionFragment.getInstance(articles,
-                    mSectionCardListener, mArticleListener);
+            return SectionFragment.getInstance(articles, 1, mSectionCardListener, mArticleListener);
         } else {
             //get an instance of the section singleton to pull the article list from the API
             SectionFragment sectionFragment = SectionFragment.getInstance(
-                    new ArrayList<Article>(), mSectionCardListener, mArticleListener);
+                    new ArrayList<Article>(), 0, mSectionCardListener, mArticleListener);
             mFetcher.getArticles(mSectionNames.get(position).getKey(), sectionFragment);
 
             return sectionFragment;

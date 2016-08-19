@@ -19,6 +19,8 @@ import com.jonathan.james.eric.project_3.presenters.SectionRecyclerViewAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.RealmResults;
+
 /**
  * Created by Jonathan Taylor on 8/15/16.
  */
@@ -27,6 +29,10 @@ public class SectionFragment extends Fragment implements APICallback{
     private static final String TAG = "SectionFragment";
 
     private List<Article> mArticles;
+    //type to determine if bookmarks or API call based
+    //0 - APICall
+    //1 - bookmarks
+    private int mType;
 
     private RecyclerView mRecyclerView;
     private SectionRecyclerViewAdapter mAdapter;
@@ -36,12 +42,13 @@ public class SectionFragment extends Fragment implements APICallback{
 
     private Context context;
 
-    public static SectionFragment getInstance(List<Article> articles,
+    public static SectionFragment getInstance(List<Article> articles, int type,
                                               SectionCardListener sectionCardListener, ArticleListener articleListener){
         SectionFragment fragment = new SectionFragment();
         fragment.mCardViewListener = sectionCardListener;
         fragment.mArticleListener = articleListener;
         fragment.mArticles = articles;
+        fragment.mType = type;
         return fragment;
     }
 
@@ -77,13 +84,17 @@ public class SectionFragment extends Fragment implements APICallback{
     @Override
     public void onResume() {
         super.onResume();
-        if(mArticles == null){
+        if(mArticles == null && mType == 0){
             mArticles = ArticleListSingleton.getInstance().getSectionArticles();
             mAdapter.changeArticleList(mArticles);
+        } else if(mArticles == null && mType == 1){
+            new RealmUtility().getBookmarkedArticles();
         }
 
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+
+        //TODO spawn dialogue if there are no bookmark articles
 
     }
 
