@@ -143,13 +143,13 @@ public class RealmUtility implements Closeable{
         });
     }
 
-    public void deleteUserPreferences(final UserPreferences up){
-
+    public void deleteUserPreferences(UserPreferences up){
+        final String query = up.getUserName();
         RealmAsyncTask realmAsyncTask = realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm bgRealm) {
                 RealmResults<UserPreferences> results = bgRealm.where(UserPreferences.class)
-                        .contains("userName",up.getUserName())
+                        .contains("userName",query)
                         .findAll();
                 Log.d(TAG, "execute: realm results contains " + results.size());
                 results.deleteAllFromRealm();

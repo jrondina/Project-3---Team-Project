@@ -27,13 +27,14 @@ import com.jonathan.james.eric.project_3.interfaces.ToolbarLoadedCallback;
 import com.jonathan.james.eric.project_3.presenters.SectionsPagerAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 
 public class SectionPageAdapterActivity extends AppCompatActivity implements APIFetcher, SwipeListener,
-        NavigationView.OnNavigationItemSelectedListener, ArticleListener, SectionCardListener, ToolbarLoadedCallback {
+        NavigationView.OnNavigationItemSelectedListener, ArticleListener, SectionCardListener, ToolbarLoadedCallback, APICallback {
 
     private static final String TAG = "MainActivity";
 
@@ -183,33 +184,45 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        //ToDo add one for each Section -- Also be sure to check if the source is active or not and spawn the fragment accordingly
+        String sectionName = null;
+        //ToDo swap out the hard coded values, but need a way to find the section object by name...
         switch(id){
             case R.id.top_news_section:
 //                ((SectionViewPagerFragment)mManager.getFragment(null, "ViewPager")).setTab(
 //                        new UserPreferences().getSectionList().
 //                );
-                //TODO initiate a callback for the article
+                sectionName = "home";
                 break;
             case R.id.world_section:
+                sectionName = "world";
                 break;
             case R.id.technology_section:
+                sectionName = "technology";
                 break;
             case R.id.business_section:
+                sectionName = "business";
                 break;
             case R.id.politics_section:
+                sectionName = "politics";
                 break;
             case R.id.science_section:
+                sectionName = "science";
                 break;
             case R.id.sports_section:
+                sectionName = "sports";
                 break;
             case R.id.entertainment_section:
+                sectionName = "movies";
                 break;
             case R.id.bookmarks_section:
-                break;
+                mManager.beginTransaction().add(R.id.section_fragment_container,
+                        SectionFragment.getInstance(new RealmUtility().getBookmarkedArticles(), this, this))
+                    .commit();
         }
-
+        if(sectionName != null) {
+            mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this.getApplicationContext()),
+                    this);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -302,5 +315,11 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public void responseFinished(List<Article> responseList) {
+        mManager.beginTransaction().add(R.id.section_fragment_container, SectionFragment.getInstance(
+                responseList, this, this)).commit();
     }
 }

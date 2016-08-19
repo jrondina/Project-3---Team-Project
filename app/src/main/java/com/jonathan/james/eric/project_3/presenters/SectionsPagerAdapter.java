@@ -75,7 +75,12 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter implements RealmC
 
     @Override
     public int getCount() {
-        return mSectionNames.size();
+        if(mSectionNames != null) {
+            return mSectionNames.size();
+        }
+        else{
+            return 0;
+        }
     }
 
     @Override
