@@ -69,17 +69,18 @@ public class RealmUtility implements Closeable{
 
     }
 
-    public void deleteArticle(final Article a){
-
+    public void deleteArticle(Article a){
+        final String articleUrl = a.getUrl();
+        final String regularImageUrl = a.getLeadImage().getRegularImage();
         final RealmAsyncTask realmAsyncTask = realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm bgRealm) {
                 RealmResults<Article> results = bgRealm.where(Article.class)
-                        .contains("url",a.getUrl()).findAll();
+                        .contains("url",articleUrl).findAll();
                 Log.d(TAG, "execute: realm results contains " + results.size());
                 results.deleteAllFromRealm();
                 RealmResults<Multimedia> multimediaresults = bgRealm.where(Multimedia.class)
-                        .equalTo("regularImage",a.getLeadImage().getRegularImage()).findAll();
+                        .equalTo("regularImage",regularImageUrl).findAll();
                 Log.d(TAG,"multimedia object contains "+ results.size());
                 multimediaresults.deleteAllFromRealm();
             }
@@ -385,6 +386,22 @@ public class RealmUtility implements Closeable{
     @Override
     public void close() throws IOException {
         realm.close();
+    }
+
+    //method to toggle whether an article is bookmarked or not (i.e. add or remove it from the database)
+    public boolean toggleBookmark(Article a){
+        boolean bookmarked;
+        realm.beginTransaction();
+        a.setBookmark(!a.isBookmark());
+        if(a.isBookmark()) {
+            insertArticle(a);
+            bookmarked = true;
+        } else{
+            deleteArticle(a);
+            bookmarked = false;
+        }
+        realm.commitTransaction();
+        return bookmarked;
     }
 
 

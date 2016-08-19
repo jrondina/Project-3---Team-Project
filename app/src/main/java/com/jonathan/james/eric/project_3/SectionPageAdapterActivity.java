@@ -141,7 +141,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
         super.onResume();
 
         Log.d(TAG, "onResume: Creating the manager and Fragments");
-        mManager.beginTransaction().add(R.id.main_content_container, SectionViewPagerFragment.getInstance(mManager,
+        mManager.beginTransaction().replace(R.id.main_content_container, SectionViewPagerFragment.getInstance(mManager,
                 this, this, this, this), "ViewPager").commit();
     }
 
@@ -221,7 +221,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
                 break;
             case R.id.bookmarks_section:
                 Log.d(TAG, "onNavigationItemSelected: starting the bookmark specific fragment");
-                mManager.beginTransaction().add(R.id.section_fragment_container,
+                mManager.beginTransaction().replace(R.id.section_fragment_container,
                         SectionFragment.getInstance(new RealmUtility().getBookmarkedArticles(), 1, this, this))
                     .commit();
         }
@@ -240,12 +240,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     public void onBookMarkClick(Article a) {
         RealmUtility realmUtility = new RealmUtility();
         //toggle the boolean for is bookmarked
-        a.setBookmark(!a.isBookmark());
-        if(a.isBookmark()) {
-            realmUtility.insertArticle(a);
-        } else{
-            realmUtility.deleteArticle(a);
-        }
+        realmUtility.toggleBookmark(a);
     }
 
     @Override
@@ -263,7 +258,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     @Override
     public void onCardClick(int position) {
         Log.d(TAG, "onCardClick: opening article detail");
-        mManager.beginTransaction().addToBackStack("Sections").add(R.id.section_fragment_container,
+        mManager.beginTransaction().addToBackStack("Sections").replace(R.id.section_fragment_container,
                 ArticleDetailFragment.getInstance(this, this, this, ArticleListSingleton.getInstance().getSectionArticles().get(position))).commit();
 
     }
@@ -325,7 +320,7 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
     @Override
     public void responseFinished(List<Article> responseList) {
-        mManager.beginTransaction().add(R.id.section_fragment_container, SectionFragment.getInstance(
+        mManager.beginTransaction().replace(R.id.section_fragment_container, SectionFragment.getInstance(
                 responseList, 1, this, this)).commit();
     }
 }

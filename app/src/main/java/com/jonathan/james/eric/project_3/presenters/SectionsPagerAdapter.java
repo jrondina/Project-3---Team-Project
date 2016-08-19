@@ -99,5 +99,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter implements RealmC
             mSectionNames = ((UserPreferences) element).getSectionList();
             notifyDataSetChanged();
         }
+        if(element instanceof RealmResults<?>){
+
+        }
     }
 }

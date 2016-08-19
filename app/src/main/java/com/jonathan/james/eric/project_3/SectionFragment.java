@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.jonathan.james.eric.project_3.interfaces.APICallback;
 import com.jonathan.james.eric.project_3.interfaces.ArticleListener;
@@ -41,6 +42,7 @@ public class SectionFragment extends Fragment implements APICallback{
     private ArticleListener mArticleListener;
 
     private Context context;
+    private TextView mMissingContent;
 
     public static SectionFragment getInstance(List<Article> articles, int type,
                                               SectionCardListener sectionCardListener, ArticleListener articleListener){
@@ -58,9 +60,10 @@ public class SectionFragment extends Fragment implements APICallback{
         View rootView = inflater.inflate(R.layout.fragment_section, container, false);
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.section_fragment_recycler_view);
+        mMissingContent = (TextView) rootView.findViewById(R.id._section_fragment_missing_message);
 
         //setup the new adapter
-        mAdapter = new SectionRecyclerViewAdapter(mArticles, mArticleListener, mCardViewListener);
+        mAdapter = new SectionRecyclerViewAdapter(mArticles, mArticleListener, mCardViewListener, mType);
 
         return rootView;
     }
@@ -71,6 +74,11 @@ public class SectionFragment extends Fragment implements APICallback{
         Log.d(TAG, "onViewCreated: setting recycler view");
 
         context = view.getContext();
+
+        //Show a message on the screen if no content
+        if(mArticles == null && mType == 1){
+            mMissingContent.setVisibility(View.VISIBLE);
+        }
 
 //        mRecyclerView.setAdapter(mAdapter);
 //        mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
@@ -90,6 +98,7 @@ public class SectionFragment extends Fragment implements APICallback{
         } else if(mArticles == null && mType == 1){
             new RealmUtility().getBookmarkedArticles();
         }
+
 
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
