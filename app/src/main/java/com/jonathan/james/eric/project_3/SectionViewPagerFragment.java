@@ -84,7 +84,7 @@ public class SectionViewPagerFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        toolbar.setTitle("UserInfoTabs");
+        toolbar.setTitle("Newsish");
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(mManager,
