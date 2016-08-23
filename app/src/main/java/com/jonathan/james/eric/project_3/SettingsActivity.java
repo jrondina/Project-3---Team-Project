@@ -25,6 +25,7 @@ public class SettingsActivity extends AppCompatActivity implements NumberPicker.
 
         mPicker = (NumberPicker) findViewById(R.id.numberPicker);
         mSwitch = (Switch) findViewById(R.id.notificationsSwitch);
+        mButton = (Button) findViewById(R.id.button);
 
         final Intent resultIntent = new Intent();
         resultIntent.putExtra("hours",hours);

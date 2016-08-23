@@ -3,7 +3,10 @@ package com.jonathan.james.eric.project_3;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
@@ -17,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.jonathan.james.eric.project_3.interfaces.APICallback;
 import com.jonathan.james.eric.project_3.interfaces.APIFetcher;
@@ -65,10 +69,6 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
         JobScheduler jobScheduler =
                 (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         jobScheduler.schedule(noteScheduler()); //schedules notifications at intervals
-
-        Intent intent = new Intent(SectionPageAdapterActivity.this,SettingsActivity.class);
-        startActivityForResult(intent,NAME_REQUEST);
-
 
         mAPIServices = new APIServices(); //instantiates an API Service
         Log.d(TAG, "onCreate: getting API services");
@@ -144,9 +144,27 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     protected void onResume() {
         super.onResume();
 
+        ConnectivityManager cm =
+                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting()) {
+
+        }
+        else {
+            Toast.makeText(SectionPageAdapterActivity.this, "No Connection", Toast.LENGTH_SHORT).show();
+        }
+
         Log.d(TAG, "onResume: Creating the manager and Fragments");
         mManager.beginTransaction().replace(R.id.main_content_container, SectionViewPagerFragment.getInstance(mManager,
                 this, this, this, this), "ViewPager").commit();
+
+
+
+
+
+
     }
 
     @Override
@@ -175,8 +193,8 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent settingsIntent = new Intent(SectionPageAdapterActivity.this, SettingsActivity.class);
-            startActivity(settingsIntent);
+            Intent intent = new Intent(SectionPageAdapterActivity.this,SettingsActivity.class);
+            startActivityForResult(intent,NAME_REQUEST);
             return true;
         }
         if (id == R.id.action_search){
@@ -284,7 +302,19 @@ public class SectionPageAdapterActivity extends AppCompatActivity implements API
     //get the article list for the current section
     @Override
     public void getArticles(String sectionName, APICallback callback) {
-        mCurrentSection = new ArrayList(mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this), callback));
+
+        ConnectivityManager cm =
+                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting()) {
+            mCurrentSection = new ArrayList(mAPIServices.topNews(sectionName, mAPIServices.retrofitInit(this), callback));
+        }
+        else {
+            Toast.makeText(SectionPageAdapterActivity.this, "No Connection - Cannot Load Articles", Toast.LENGTH_SHORT).show();
+        }
+
 
         //test code
 //        mCurrentSection = new ArrayList<Article>();
