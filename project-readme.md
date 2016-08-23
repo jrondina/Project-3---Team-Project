@@ -31,3 +31,16 @@ Known Bugs:
 - Settings page unavailable from the Article Detail
 - Search not functional
 - sometimes un-bookmarking two items in a row can cause a crash
+
+A link to our Trello:
+[Trello Board](https://trello.com/b/YgHHlAmT)
+
+[Prototype1](https://goo.gl/photos/PG8i89HWAArCVo2U7)
+
+Prototype2:
+![image1](https://github.com/jrondina/Project-3---Team-Project/blob/master/Screenshot_20160823-142952.png)
+![image2](https://github.com/jrondina/Project-3---Team-Project/blob/master/Screenshot_20160823-142955.png)
+![image3](https://github.com/jrondina/Project-3---Team-Project/blob/master/Screenshot_20160823-142959.png)
+![image4](https://github.com/jrondina/Project-3---Team-Project/blob/master/IMG_20160811_151058.jpg)
+![image5](https://github.com/jrondina/Project-3---Team-Project/blob/master/IMG_20160812_165651.jpg)
+![image6](https://github.com/jrondina/Project-3---Team-Project/blob/master/IMG_20160818_140759.jpg)
